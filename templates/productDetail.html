@@ -2,293 +2,494 @@
 {% load static %}
 
 {% block title %}
-BuyZone | {{ product.product_name }}
+MH Club | {{ product.product_name }}
 {% endblock title %}
 
-<div class="mt-5">
-    {% block content %}
+{% block content %}
+<style>
+  /* Premium Minimalist Product Page Styles */
+  :root {
+    --bg-main: #ffffff;
+    --bg-muted: #f9f9f9;
+    --text-main: #111111;
+    --text-muted: #767676;
+    --border-color: #eeeeee;
+  }
 
-    <h3 data-aos="fade-up" class="text-white font-weight-bold text-center" style="width: 100%; font-weight: 800">
-        Welcome to Product details!
-    </h3>
+  .breadcrumb-custom a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    transition: color 0.2s ease;
+  }
 
-    {% endblock content %}
-</div>
+  .breadcrumb-custom a:hover {
+    color: var(--text-main);
+  }
 
-{% block body %}
+  .breadcrumb-custom span {
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .product-image-container {
+    background-color: var(--bg-muted);
+    border-radius: 24px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-image-main {
+    max-height: 550px;
+    width: 100%;
+    object-fit: contain;
+    cursor: zoom-in;
+    transition: transform 0.4s ease;
+  }
+
+  .product-image-main:hover {
+    transform: scale(1.03);
+  }
+
+  .product-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .product-brand {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .product-price {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 2rem;
+  }
+
+  .product-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .product-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .details-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .details-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+
+  .details-list li strong {
+    color: var(--text-main);
+    font-weight: 500;
+  }
+
+  .details-list li span {
+    color: var(--text-muted);
+  }
+
+  .details-list li .text-success {
+    color: #111 !important;
+    font-weight: 500;
+  }
+
+  /* Star Ratings */
+  .star-rating {
+    color: #111;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Pill Button */
+  .btn-cart-pill {
+    background-color: var(--text-main);
+    color: var(--bg-main);
+    border-radius: 50px;
+    padding: 16px 32px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 1px solid var(--text-main);
+    transition: all 0.3s ease;
+    width: 100%;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-cart-pill:hover {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+  }
+
+  @media (max-width: 768px) {
+    .product-title {
+      font-size: 2rem;
+    }
+
+    .product-image-container {
+      padding: 1rem;
+      border-radius: 16px;
+    }
+  }
+
+  .thumbnail-item {
+    width: 75px;
+    height: 95px;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #eee;
+    transition: all 0.2s ease;
+    background-color: #f5f5f5;
+  }
+
+  .thumbnail-item.active-thumb {
+    border-color: #111;
+  }
+</style>
+
 <div class="container my-5">
+  <!-- Breadcrumbs -->
+  <div class="breadcrumb-custom mb-4" data-aos="fade-in">
+    <a href="/">Home</a> /
+    <a href="{% url 'category_products' product.category %}">{{ product.category|title }}</a> /
+    <span>{{ product.product_name|truncatechars:30 }}</span>
+  </div>
 
-    <!-- Header -->
-    <div class="text-center mb-4">
-        <h2 class="fw-bold text-primary">BuyZone</h2>
-        <p class="text-muted">Product Details</p>
-    </div>
+  <!-- Product Layout -->
+  <div class="row g-5 align-items-start">
 
-    <!-- Product Layout -->
-    <div class="row g-4 bg-white shadow-sm rounded p-4">
+    <!-- LEFT : Vertical Thumbnails Sidebar & Main Image Preview -->
+    <div class="col-12 col-lg-7" data-aos="fade-right">
+      <div class="d-flex gap-3 align-items-start">
 
-        <!-- LEFT : Image -->
-        <div class="col-12 col-md-6 text-center">
-            <div class="border rounded p-3">
-                <div class="img-display">
-                    <div class="img-showcase xzoom-container xzoom-custom">
-                        <!-- <img src="{{ product.image.url }}" class="xzoom img-fluid" xoriginal="{{ product.image.url }}"
-                            alt="product image" id="xzoom-default" /> -->
-                        <img src="{{ product.image.url }}" id="xzoom-default" class="xzoom img-fluid"
-                            xoriginal="{{ product.image.url }}"
-                            style="max-height:380px; object-fit:contain; cursor: zoom-in;"
-                            alt="{{ product.product_name }}" />
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- RIGHT : Details -->
-        <div class="col-12 col-md-6">
-
-            <h3 class="fw-bold">{{ product.product_name }}</h3>
-            <p class="text-muted mb-2">Sold by <strong>BuyZone</strong></p>
-
-            <!-- Rating -->
-            <div class="mb-2">
-                {% for i in stars %}
-                <i class="fa-solid fa-star text-warning"></i>
-                {% endfor %}
-            </div>
-
-            <!-- Price -->
-            <h4 class="text-danger fw-bold my-3">₹ {{ product.price }}</h4>
-
-
-            <!-- Product Info -->
-            <h5 class="fw-bold">About this item</h5>
-            <p class="text-muted">{{ product.desc }}</p>
-
-            <ul class="list-group list-group-flush mt-3">
-                <li class="list-group-item px-0">
-                    <strong>Category:</strong> {{ product.category|title }}
-                </li>
-                <li class="list-group-item px-0">
-                    <strong>Sub-Category:</strong> {{ product.subcategory|title }}
-                </li>
-                <li class="list-group-item px-0">
-                    <strong>Shipping Fee:</strong>
-                    <span class="text-success">{{ product.ShippingFee }} Included in product price</span>
-                </li>
-                <li class="list-group px-0">
-                    <!-- Hidden info so JS can read like index page -->
-                    <span id="namepr{{product.id}}" hidden>{{ product.product_name }}</span>
-                    <span id="pricepr{{product.id}}" hidden>{{ product.price }}</span>
-                    <span id="oldpricepr{{product.id}}" hidden>{{ product.OldPrice }}</span>
-                    <span id="discountpr{{product.id}}" hidden>{{ product.Discount }}</span>
-
-                    <!-- ADD TO CART / PLUS-MINUS AREA -->
-                    <div id="divpr{{product.id}}" class="divpr mt-3">
-                        <button id="pr{{product.id}}" class="btn btn-danger w-100 cart">
-                            Add To Cart
-                        </button>
-                    </div>
-                </li>
-            </ul>
-
-
-        </div>
-    </div>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        /* =========================
-           CART INITIALIZATION
-        ========================== */
-
-        let cart = localStorage.getItem("cart")
-            ? JSON.parse(localStorage.getItem("cart"))
-            : {};
-
-        const cartCount = document.getElementById("cart");
-        const popcart = document.getElementById("popcart");
-
-        const popover = new bootstrap.Popover(popcart, {
-            html: true,
-            trigger: "button",
-            sanitize: false,     // 🔥 REQUIRED for <button>
-            placement: "bottom",
-            content: "Your cart is empty"
-        });
-
-        updateCart(cart);
-
-        /* =========================
-           ADD TO CART
-        ========================== */
-
-        document.addEventListener("click", function (e) {
-            if (!e.target.classList.contains("cart")) return;
-
-            const id = e.target.id; // pr1, pr2
-            const name = document.getElementById("name" + id).innerText;
-            const price = document.getElementById("price" + id).innerText;
-            const oldPrice = document.getElementById("oldprice" + id).innerText;
-            const discount = document.getElementById("discount" + id).innerText;
-
-            if (cart[id]) {
-                cart[id][0]++;
-            } else {
-                cart[id] = [1, name, price, oldPrice, discount];
-            }
-
-            saveCart();
-            updatePopover();
-        });
-
-
-        /* =========================
-           PLUS / MINUS BUTTONS
-        ========================== */
-
-        document.addEventListener("click", function (e) {
-
-            if (e.target.classList.contains("plus")) {
-                const id = e.target.dataset.id;
-                cart[id][0]++;
-            }
-
-            if (e.target.classList.contains("minus")) {
-                const id = e.target.dataset.id;
-                cart[id][0]--;
-
-                // ✅ WHEN QTY BECOMES 0 → REMOVE ITEM & SHOW ADD TO CART
-                if (cart[id][0] <= 0) {
-                    delete cart[id];
-
-                    const div = document.getElementById("div" + id);
-                    if (div) {
-                        div.innerHTML = `
-                            <button id="${id}" class="btn btn-danger btn-sm w-100 cart">
-                                Add To Cart
-                            </button>
-                            `;
-                    }
-                }
-            }
-
-            saveCart();
-            updatePopover();
-        });
-
-        /* =========================
-           UPDATE CART UI
-        ========================== */
-
-        function updateCart(cart) {
-            let totalQty = 0;
-
-            for (let item in cart) {
-                totalQty += cart[item][0];
-
-                const div = document.getElementById("div" + item);
-                if (!div) continue;
-
-                div.innerHTML = `
-                    <button class="btn btn-success btn-sm minus" data-id="${item}">−</button>
-                    <span class="mx-2">${cart[item][0]}</span>
-                    <button class="btn btn-success btn-sm plus" data-id="${item}">+</button>
-                    <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" class="btn btn-success btn-sm">Checkout</a>
-                `;
-                div.style.display = "flex";
-                div.style.justifyContent = "space-between";
-                div.style.alignItems = "center";
-            }
-
-            cartCount.innerText = totalQty;
-        }
-
-        /* =========================
-           UPDATE POPOVER
-        ========================== */
-        function updatePopover() {
-
-            let html = `<h6>Your Cart</h6><div class="mb-2">`;
-            let i = 1;
-            let hasItems = false;
-
-            for (let item in cart) {
-                if (cart[item][0] > 0) {
-                    hasItems = true;
-                    html += `<b>${i}.</b> ${cart[item][1].slice(0, 20)}
-        (<b>${cart[item][0]}</b>)<br>`;
-                    i++;
-                }
-            }
-
-            if (!hasItems) {
-                popover.hide();
-                return;
-            }
-
-            html += `
+        <!-- Vertical Thumbnails Sidebar -->
+        <div class="d-flex flex-column gap-2" style="max-height: 550px; overflow-y: auto; scrollbar-width: none;">
+          {% for img in product.additional_images.all %}
+          <div class="thumbnail-item {% if forloop.first %}active-thumb{% endif %}"
+            onclick="changeMainImage('{{ img.image.url }}', this)">
+            <img src="{{ img.image.url }}" class="w-100 h-100" style="object-fit: cover; object-position: top;"
+              alt="Thumbnail">
           </div>
-          <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" 
-            class="btn btn-success btn-sm">Checkout</a>
-          <button class="btn btn-danger btn-sm ms-2" onclick="clearCart()">Clear</button>
-      `;
+          {% endfor %}
+        </div>
 
-            popover.setContent({ ".popover-body": html });
-            popover.show();
-        }
+        <!-- Main Display Image Container -->
+        <div class="product-image-container flex-grow-1 mb-0">
+          <div class="xzoom-container xzoom-custom w-100 text-center">
+            {% if product.additional_images.exists %}
+            <img src="{{ product.additional_images.first.image.url }}" id="mainProductImg"
+              class="xzoom product-image-main" xoriginal="{{ product.additional_images.first.image.url }}"
+              alt="{{ product.product_name }}" />
+            {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}" id="mainProductImg" class="xzoom product-image-main"
+              alt="{{ product.product_name }}" />
+            {% endif %}
+          </div>
+        </div>
 
+      </div>
+    </div>
 
+    <!-- RIGHT : Details -->
+    <div class="col-12 col-lg-5" data-aos="fade-left">
 
-        /* =========================
-           SAVE CART
-        ========================== */
+      <h1 class="product-title">{{ product.product_name }}</h1>
+      <p class="product-brand">Sold by MH Club</p>
 
-        function saveCart() {
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateCart(cart);
-        }
+      <!-- Rating -->
+      <div class="star-rating d-flex align-items-center gap-1">
+        {% for i in stars %}
+        <i class="bi bi-star-fill"></i>
+        {% endfor %}
+        <span class="ms-2 text-muted" style="font-size: 0.85rem;">(Reviews)</span>
+      </div>
 
-        /* =========================
-           CLEAR CART (GLOBAL)
-        ========================== */
+      <!-- Price -->
+      <div class="product-price">
+        ₹{{ product.price }}
+        {% if product.OldPrice %}
+        <del class="ms-2 text-muted" style="font-size: 1.1rem; font-weight: 400;">₹{{ product.OldPrice }}</del>
+        {% endif %}
+      </div>
 
-        window.clearCart = function () {
-            cart = {};
-            localStorage.removeItem("cart");
-            cartCount.innerText = "0";
-            popover.hide();
+      <!-- Product Info -->
+      <h5 class="product-section-title">The Details</h5>
+      <p class="product-desc">{{ product.desc }}</p>
 
-            document.querySelectorAll(".divpr").forEach(div => {
-                const id = div.id.replace("div", "");
-                div.innerHTML = `
-        <button id="${id}" style="width:100%;" class="btn btn-danger btn-sm cart">
-          Add To Cart
+      <ul class="details-list mb-5">
+        <li>
+          <strong>Category</strong>
+          <span>{{ product.category|title }}</span>
+        </li>
+        <li>
+          <strong>Style</strong>
+          <span>{{ product.subcategory|title }}</span>
+        </li>
+        <li>
+          <strong>Delivery</strong>
+          <span class="text-success">{{ product.ShippingFee }} Included</span>
+        </li>
+      </ul>
+
+      <!-- Hidden variables for JS functionality -->
+      <span id="namepr{{product.id}}" hidden>{{ product.product_name }}</span>
+      <span id="pricepr{{product.id}}" hidden>{{ product.price }}</span>
+      <span id="oldpricepr{{product.id}}" hidden>{{ product.OldPrice }}</span>
+      <span id="discountpr{{product.id}}" hidden>{{ product.Discount }}</span>
+
+      <!-- ADD TO CART / PLUS-MINUS AREA -->
+      <div id="divpr{{product.id}}" class="divpr mt-4">
+        <button id="pr{{product.id}}" class="btn-cart-pill cart">
+          Add To Bag
         </button>
-      `;
-            });
-        };
+      </div>
 
-        document.querySelectorAll(".view-image").forEach(button => {
-            button.addEventListener("click", function () {
+    </div>
+  </div>
+</div>
+{% endblock content %}
 
-                const imageUrl = this.dataset.image;
-                const productName = this.dataset.name;
+{% block scripts %}
+<script>
+  // Function to switch main image preview when a vertical thumbnail is clicked
+  function changeMainImage(imageUrl, element) {
+    const mainImg = document.getElementById("mainProductImg");
+    if (mainImg) {
+      mainImg.src = imageUrl;
+      mainImg.setAttribute("xoriginal", imageUrl);
+    }
 
-                const modalImage = document.getElementById("modalImage");
-                const modalTitle = document.getElementById("imageModalLabel");
-
-                modalTitle.textContent = productName;
-                modalImage.src = imageUrl;
-
-            });
-        });
-
-
-
+    // Update active thumbnail border styling
+    document.querySelectorAll(".thumbnail-item").forEach(item => {
+      item.style.borderColor = "#eee";
     });
+    element.style.borderColor = "#111";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+
+    /* =========================
+       CART INITIALIZATION
+    ========================= */
+    let cart = localStorage.getItem("cart")
+      ? JSON.parse(localStorage.getItem("cart"))
+      : {};
+
+    const cartCount = document.getElementById("cart");
+    const popcart = document.getElementById("popcart");
+
+    let popover = null;
+    if (popcart) {
+      popover = new bootstrap.Popover(popcart, {
+        html: true,
+        trigger: "button",
+        sanitize: false,
+        placement: "bottom",
+        content: "Your bag is empty"
+      });
+    }
+
+    updateCart(cart);
+
+    /* =========================
+       ADD TO CART
+    ========================= */
+    document.addEventListener("click", function (e) {
+      if (!e.target.classList.contains("cart")) return;
+
+      const id = e.target.id;
+      const name = document.getElementById("name" + id).innerText;
+      const price = document.getElementById("price" + id).innerText;
+
+      const oldPriceEl = document.getElementById("oldprice" + id);
+      const discountEl = document.getElementById("discount" + id);
+      const oldPrice = oldPriceEl ? oldPriceEl.innerText : "0";
+      const discount = discountEl ? discountEl.innerText : "0";
+
+      if (cart[id]) {
+        cart[id][0]++;
+      } else {
+        cart[id] = [1, name, price, oldPrice, discount];
+      }
+
+      saveCart();
+      updatePopover();
+    });
+
+    /* =========================
+       PLUS / MINUS BUTTONS
+    ========================= */
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("plus")) {
+        const id = e.target.dataset.id;
+        cart[id][0]++;
+      }
+
+      if (e.target.classList.contains("minus")) {
+        const id = e.target.dataset.id;
+        cart[id][0]--;
+
+        if (cart[id][0] <= 0) {
+          delete cart[id];
+
+          const div = document.getElementById("div" + id);
+          if (div) {
+            div.innerHTML = `
+              <button id="${id}" class="btn-cart-pill cart">
+                Add To Bag
+              </button>
+            `;
+          }
+        }
+      }
+
+      saveCart();
+      updatePopover();
+    });
+
+    /* =========================
+       UPDATE CART UI
+    ========================= */
+    function updateCart(cart) {
+      let totalQty = 0;
+
+      for (let item in cart) {
+        totalQty += cart[item][0];
+
+        const div = document.getElementById("div" + item);
+        if (!div) continue;
+
+        div.innerHTML = `
+          <div class="d-flex align-items-center justify-content-between w-100" style="border: 1px solid #eee; border-radius: 50px; padding: 6px; background: #fff;">
+            <button class="btn btn-sm minus rounded-circle" style="width: 44px; height: 44px; background: #f5f5f5; color: #111; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" data-id="${item}">−</button>
+            <span class="fw-bold mx-2" style="font-size: 1rem; color: #111;">${cart[item][0]}</span>
+            <button class="btn btn-sm plus rounded-circle" style="width: 44px; height: 44px; background: #111; color: #fff; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" data-id="${item}">+</button>
+          </div>
+        `;
+        div.style.display = "flex";
+      }
+
+      if (cartCount) {
+        cartCount.innerText = totalQty;
+      }
+    }
+
+    /* =========================
+       UPDATE POPOVER
+    ========================= */
+    function updatePopover() {
+      if (!popover) return;
+
+      let html = `<h6 class="mb-3 fw-bold" style="color: #111;">Your Bag</h6><div class="mb-3">`;
+      let i = 1;
+      let hasItems = false;
+
+      for (let item in cart) {
+        if (cart[item][0] > 0) {
+          hasItems = true;
+          html += `<div style="font-size: 0.85rem; color: #767676; margin-bottom: 8px;">
+            <span class="fw-bold text-dark">${i}.</span> ${cart[item][1].slice(0, 20)} 
+            <span class="float-end fw-bold text-dark">x${cart[item][0]}</span>
+          </div>`;
+          i++;
+        }
+      }
+
+      if (!hasItems) {
+        popover.hide();
+        return;
+      }
+
+      html += `
+        </div>
+        <div class="d-flex gap-2 mt-3 pt-3 border-top">
+          <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" 
+            class="btn w-100 fw-bold" style="background-color: #111; color: #fff; border-radius: 50px; font-size: 0.8rem; padding: 10px 0;">Checkout</a>
+          <button class="btn fw-bold" style="background-color: #f5f5f5; color: #111; border-radius: 50px; font-size: 0.8rem; padding: 10px 15px;" onclick="clearCart()">Clear</button>
+        </div>
+      `;
+
+      popover.setContent({ ".popover-body": html });
+      popover.show();
+    }
+
+    /* =========================
+       SAVE CART
+    ========================= */
+    function saveCart() {
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCart(cart);
+    }
+
+    /* =========================
+       CLEAR CART (GLOBAL)
+    ========================= */
+    window.clearCart = function () {
+      cart = {};
+      localStorage.removeItem("cart");
+      if (cartCount) cartCount.innerText = "0";
+      if (popover) popover.hide();
+
+      document.querySelectorAll(".divpr").forEach(div => {
+        const id = div.id.replace("div", "");
+        div.innerHTML = `
+          <button id="${id}" class="btn-cart-pill cart">
+            Add To Bag
+          </button>
+        `;
+      });
+    };
+
+    /* =========================
+       MODAL IMAGE HANDLING
+    ========================= */
+    document.querySelectorAll(".view-image").forEach(button => {
+      button.addEventListener("click", function () {
+        const imageUrl = this.dataset.image;
+        const productName = this.dataset.name;
+        const modalImage = document.getElementById("modalImage");
+        const modalTitle = document.getElementById("imageModalLabel");
+
+        if (modalTitle && modalImage) {
+          modalTitle.textContent = productName;
+          modalImage.src = imageUrl;
+        }
+      });
+    });
+
+  });
 </script>
-
-
-{% endblock body %}
+{% endblock scripts %}

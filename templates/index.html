@@ -1,380 +1,664 @@
 {% extends "base.html" %}
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Bootstrap Bundle with Popper.js (Bootstrap 5) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Bootstrap 4 JavaScript -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-
-{% block title %} Home {% endblock title %}
+{% load static %}
 
 {% block content %}
+<!-- Minimalist Premium CSS System -->
+<style>
+  .hero-container {
+    padding: 0 2rem;
+    margin-bottom: 4rem;
+  }
 
-<h3 data-aos="fade-up" class="text-white font-weight-bold text-center" style="width: 100%; font-weight: 800">
-  Welcome to Dhamaka Sale!
-</h3>
-<p class="lead mt-2 text-center text-white" data-aos="fade-up">
-    Biggest deals, best prices – limited time only
+  .hero-card {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    min-height: 550px;
+    border-radius: 24px;
+    overflow: hidden;
+    background-color: #f1f1f1;
+  }
+
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.85);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .hero-title {
+    color: #ffffff;
+    font-size: 5rem;
+    font-weight: 600;
+    letter-spacing: -2px;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .hero-subtitle {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 300;
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .btn-shopping {
+    background-color: #ffffff;
+    color: #111111;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+  }
+
+  .btn-arrow {
+    background-color: #ffffff;
+    color: #111111;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+  }
+
+  .btn-shopping:hover,
+  .btn-arrow:hover {
+    transform: scale(1.05);
+    color: #111111;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+    color: #111;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: #767676;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Category Headers */
+  .category-header {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: #111;
+    margin-bottom: 2rem;
+  }
+
+  .category-header a {
+    color: #111 !important;
+    text-decoration: none;
+  }
+
+  /* Editorial Product Cards */
+  .product-card {
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .product-img-wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    aspect-ratio: 3/4;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+
+  .product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    transition: transform 0.6s ease;
+  }
+
+  .product-img-wrapper:hover .product-img {
+    transform: scale(1.05);
+  }
+
+  .sale-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: #111;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    z-index: 10;
+  }
+
+  /* Pill Buttons */
+  .btn-cart-pill {
+    background-color: #111;
+    color: #fff;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #111;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .btn-cart-pill:hover {
+    background-color: #fff;
+    color: #111;
+  }
+
+  .btn-icon-pill {
+    background-color: #fff;
+    color: #111;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+  }
+
+  .btn-icon-pill:hover {
+    background-color: #f5f5f5;
+  }
+
+  /* Horizontal Category Header & Slider Link */
+  .category-header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+  }
+
+  .category-header {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: #111;
+    margin-bottom: 0;
+  }
+
+  .category-header a {
+    color: #111 !important;
+    text-decoration: none;
+  }
+
+  .category-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #111;
+    text-decoration: none;
+    background: #f5f5f5;
+    padding: 8px 16px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+  }
+
+  .category-view-all:hover {
+    background: #111;
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .hero-container {
+      padding: 0 1rem;
+    }
+
+    .hero-card {
+      height: 60vh;
+      min-height: 400px;
+    }
+
+    .hero-overlay {
+      padding: 2rem;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+    }
+  }
+</style>
+
+<div class="hero-container">
+  <div class="hero-card">
+    <img src="{% static 'images/hero_mens.jpg' %}" alt="CloudeyStyles Premium Fashion" class="hero-img">
+
+    <div class="hero-overlay">
+      <h1 class="hero-title">CloudeyStyles.</h1>
+      <p class="hero-subtitle" data-aos="fade-up">
+        Discover our wide ranging and timeless lifestyle products. Pick your favourite stuff that matches your personal
+        taste, style, and suits your vibe.
+      </p>
+
+      <div class="hero-cta" data-aos="fade-up" data-aos-delay="100">
+        <a href="#portfolio" class="btn-shopping">Start shopping</a>
+        <a href="#portfolio" class="btn-arrow"><i class="bi bi-arrow-up-right"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <h2 class="section-title">Fresh Fashion at Modern Vibes</h2>
+  <p class="section-subtitle">
+    Our collection is constantly updated with the latest styles, ensuring you're always on point. Shop now and let your
+    fashion sense shine with the newest arrivals at MH Club.
   </p>
-
-
+</div>
 {% endblock content %}
+
 {% block body %}
-{% load static %}
-<!-- Portfolio Section -->
-<section id="portfolio" class="portfolio section">
-  <div class="d-flex justify-content-center align-items-center">
-    <div class="hero-container w-auto d-inline-block mx-auto">
+
+<section id="portfolio" class="portfolio section pb-5">
+
+  <!-- Alert Messages -->
+  <div class="container d-flex justify-content-center align-items-center mb-5">
+    <div class="w-100 text-center">
       {% for message in messages %}
-      <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+      <div class="alert alert-{{message.tags}} alert-dismissible fade show text-uppercase"
+        style="background-color: #111; color: #fff; border-radius: 50px; border: none; letter-spacing: 1px; font-size: 0.8rem; display: inline-block; padding: 10px 30px;"
+        role="alert">
         <strong>{{message}}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+        <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="close"
+          style="font-size: 0.7rem;"></button>
       </div>
       {% endfor %}
     </div>
   </div>
 
-  <section id="portfolio" class="portfolio section">
-    <div class="container section-title text-center" data-aos="fade-up">
-      <h2>Welcome to <span style="text-transform: none;">BuyZone</span></h2>
-      <p>
-        <span>Check Our</span>
-        <span class="description-title">Products</span>
-      </p>
+  <div class="container" data-aos="fade-up">
+    {% for product, range, nSlides in allProds %}
+
+    <!-- <div class="row mb-4 mt-5">
+      <div class="col-12">
+        <h3 class="category-header">
+           <a href="{% url 'category_products' product.0.category %}">
+             {{ product.0.category|title }} <span style="color: #767676; font-weight: 400;">Collection</span>
+           </a>
+        </h3>
+      </div>
+    </div> -->
+
+    <!-- Category Header with View All Arrow -->
+    <div class="row mb-4 mt-5">
+      <div class="col-12">
+        <div class="category-header-wrapper">
+          <h3 class="category-header">
+            <a href="{% url 'category_products' product.0.category %}">
+              {{ product.0.category|title }} <span style="color: #767676; font-weight: 400;">Collection</span>
+            </a>
+          </h3>
+          <a href="{% url 'category_products' product.0.category %}" class="category-view-all">
+            View All <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
     </div>
 
-    <div class="container" data-aos="fade-up">
-      {% for product, range, nSlides in allProds %}
+    <div class="row g-4 mb-5">
+      {% for i in product %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
 
-      <h3 class="my-4 text-center text-success bg-light py-2 rounded">
-         <a href="{% url 'category_products' product.0.category %}"
-          class="text-success text-decoration-none">
-          {{ product.0.category|title }} Flash Sale
-         </a>
-      </h3>
+        <div class="card product-card w-100 position-relative">
 
-      <div class="row g-3">
-        {% for i in product %}
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+          <!-- Discount Badge overlay -->
+          {% if i.Discount > 0 %}
+          <span class="sale-badge" id="discountpr{{i.id}}">{{ i.Discount }}% OFF</span>
+          {% endif %}
 
-          <div class="card h-100 w-100 shadow-sm">
+          <!-- Image Wrapper with multi-image hover cycling -->
+          <a href="{% url 'productDetails' product_id=i.id %}" class="product-img-wrapper product-card-hover"
+            data-product-id="{{ i.id }}">
+            <img src="{{ i.main_image }}" class="product-img" alt="{{ i.product_name }}" id="img-{{ i.id }}"
+              data-images='[{% for img in i.additional_images.all %}"{{ img.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}]'
+              style="transition: opacity 0.3s ease;">
+          </a>
 
-            <!-- Image -->
-            <a href="{% url 'productDetails' product_id=i.id %}" class="text-decoration-none text-dark">
-              <img src="{{ i.image.url }}" class="card-img-top img-fluid" style="height:200px; object-fit:contain;"
-                alt="{{ i.product_name }}">
-            </a>
-
-            <!-- Body -->
-            <div class="card-body d-flex flex-column">
-
-              <h6 class="card-title fw-bold text-truncate" id="namepr{{i.id}}">
+          <!-- Details -->
+          <div class="card-body d-flex flex-column px-0 py-2">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <h6 class="card-title fw-bold text-truncate mb-0" style="font-size: 1rem; color: #111;"
+                id="namepr{{i.id}}">
                 {{ i.product_name }}
               </h6>
-
-              <p class="card-text small text-muted" style="min-height:45px;">
-                {{ i.desc|slice:"0:60" }}...
-              </p>
-
-              <div class="mb-2">
-                <del class="text-danger small" id="oldpricepr{{i.id}}">
-                  ₹{{ i.OldPrice }}
-                </del><br>
-                <span class="fw-bold text-danger">
-                  ₹<span id="pricepr{{i.id}}">{{ i.price }}</span>
-                </span>
-                <span class="text-primary small" id="discountpr{{i.id}}">
-                  ({{ i.Discount }}% Off)
-                </span>
-              </div>
-
-              <!-- Buttons stick to bottom -->
-              <div class="mt-auto">
-
-                <div id="divpr{{i.id}}" class="divpr mb-2">
-                  <button id="pr{{i.id}}" class="btn btn-danger btn-sm w-100 cart" style="width:100%;">
-                    Add To Cart
-                  </button>
-                </div>
-
-                <button class="btn btn-outline-dark btn-sm w-100 view-image" data-bs-toggle="modal"
-                  data-bs-target="#imageModal" data-name="{{ i.product_name }}" data-image="{{ i.image.url }}">
-                  View 👁
-                </button>
-
-              </div>
             </div>
+
+            <p class="card-text mb-2 text-truncate" style="font-size: 0.85rem; color: #767676;">
+              {{ i.desc|slice:"0:50" }}...
+            </p>
+
+            <div class="mb-3" style="color: #111;">
+              <span class="fw-bold" style="font-size: 1.1rem;">
+                ₹<span id="pricepr{{i.id}}">{{ i.price }}</span>
+              </span>
+              {% if i.OldPrice %}
+              <del class="ms-2" style="font-size: 0.85rem; color: #767676;" id="oldpricepr{{i.id}}">
+                ₹{{ i.OldPrice }}
+              </del>
+              {% endif %}
+            </div>
+
+            <!-- Buttons stick to bottom -->
+            <div class="mt-auto d-flex gap-2">
+              <div id="divpr{{i.id}}" class="divpr flex-grow-1">
+                <button id="pr{{i.id}}" class="btn-cart-pill cart">
+                  Add To Bag
+                </button>
+              </div>
+
+              <button class="btn-icon-pill view-image" data-bs-toggle="modal" data-bs-target="#imageModal"
+                data-name="{{ i.product_name }}" data-image="{{ i.image.url }}">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+
           </div>
-
         </div>
-        {% endfor %}
-      </div>
 
+      </div>
       {% endfor %}
     </div>
-  </section>
 
+    {% endfor %}
+  </div>
+</section>
 
-  <div data-aos="fade-up" class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="imageModalLabel" class="productName">----</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <img id="modalImage" src="" class="img-fluid" alt="Large Product Image">
-        </div>
+<!-- Product Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 24px; border: none;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" style="font-size: 1.2rem; color: #111;" id="imageModalLabel">----</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <img id="modalImage" src="" class="img-fluid"
+          style="max-height: 70vh; object-fit: contain; border-radius: 16px;" alt="Large Product Image">
       </div>
     </div>
   </div>
+</div>
 
-  <!-- /Portfolio Section -->
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Scripts -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
 
-  <!-- jQuery (needed for Bootstrap's JavaScript plugins) -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    /* =========================
+       CART INITIALIZATION
+    ========================= */
+    let cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : {};
+    const cartCount = document.getElementById("cart");
+    const popcart = document.getElementById("popcart");
 
-  <!-- Bootstrap 5 Bundle with Popper.js -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Bootstrap 5 Bundle with Popper.js -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Bootstrap 4 CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-  <!-- Bootstrap 4 Bundle with Popper.js -->
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Bootstrap 5 Bundle with Popper.js -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-    crossorigin="anonymous"></script>
-
-
-
-  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
-    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
-    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
-    crossorigin="anonymous"></script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-      /* =========================
-         CART INITIALIZATION
-      ========================== */
-
-      let cart = localStorage.getItem("cart")
-        ? JSON.parse(localStorage.getItem("cart"))
-        : {};
-
-      const cartCount = document.getElementById("cart");
-      const popcart = document.getElementById("popcart");
-
-      const popover = new bootstrap.Popover(popcart, {
+    let popover = null;
+    if (popcart) {
+      popover = new bootstrap.Popover(popcart, {
         html: true,
         trigger: "button",
-        sanitize: false,     // 🔥 REQUIRED for <button>
+        sanitize: false,
         placement: "bottom",
-        content: "Your cart is empty"
+        content: "Your bag is empty"
       });
+    }
 
-      updateCart(cart);
+    updateCart(cart);
 
-      /* =========================
-         ADD TO CART
-      ========================== */
+    /* =========================
+       ADD TO CART
+    ========================= */
+    document.addEventListener("click", function (e) {
+      if (!e.target.classList.contains("cart")) return;
 
-      document.addEventListener("click", function (e) {
-        if (!e.target.classList.contains("cart")) return;
+      const id = e.target.id;
+      const name = document.getElementById("name" + id).innerText;
+      const price = document.getElementById("price" + id).innerText;
 
-        const id = e.target.id; // pr1, pr2
-        const name = document.getElementById("name" + id).innerText;
-        const price = document.getElementById("price" + id).innerText;
-        const oldPrice = document.getElementById("oldprice" + id).innerText;
-        const discount = document.getElementById("discount" + id).innerText;
+      const oldPriceEl = document.getElementById("oldprice" + id);
+      const discountEl = document.getElementById("discount" + id);
+      const oldPrice = oldPriceEl ? oldPriceEl.innerText : "0";
+      const discount = discountEl ? discountEl.innerText : "0";
 
-        if (cart[id]) {
-          cart[id][0]++;
-        } else {
-          cart[id] = [1, name, price, oldPrice, discount];
-        }
+      if (cart[id]) {
+        cart[id][0]++;
+      } else {
+        cart[id] = [1, name, price, oldPrice, discount];
+      }
 
-        saveCart();
-        updatePopover();
-      });
+      saveCart();
+      updatePopover();
+    });
 
+    /* =========================
+       PLUS / MINUS BUTTONS
+    ========================= */
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("plus")) {
+        const id = e.target.dataset.id;
+        cart[id][0]++;
+      }
 
-      /* =========================
-         PLUS / MINUS BUTTONS
-      ========================== */
+      if (e.target.classList.contains("minus")) {
+        const id = e.target.dataset.id;
+        cart[id][0]--;
 
-      document.addEventListener("click", function (e) {
-
-        if (e.target.classList.contains("plus")) {
-          const id = e.target.dataset.id;
-          cart[id][0]++;
-        }
-
-        if (e.target.classList.contains("minus")) {
-          const id = e.target.dataset.id;
-          cart[id][0]--;
-
-          // ✅ WHEN QTY BECOMES 0 → REMOVE ITEM & SHOW ADD TO CART
-          if (cart[id][0] <= 0) {
-            delete cart[id];
-
-            const div = document.getElementById("div" + id);
-            if (div) {
-              div.innerHTML = `
-          <button id="${id}" class="btn btn-danger btn-sm w-100 cart">
-            Add To Cart
-          </button>
-        `;
-            }
+        if (cart[id][0] <= 0) {
+          delete cart[id];
+          const div = document.getElementById("div" + id);
+          if (div) {
+            div.innerHTML = `
+              <button id="${id}" class="btn-cart-pill cart">
+                Add To Bag
+              </button>
+            `;
           }
         }
+      }
 
-        saveCart();
-        updatePopover();
-      });
+      saveCart();
+      updatePopover();
+    });
 
-      /* =========================
-         UPDATE CART UI
-      ========================== */
+    /* =========================
+       UPDATE CART UI
+    ========================= */
+    function updateCart(cart) {
+      let totalQty = 0;
 
-      function updateCart(cart) {
-        let totalQty = 0;
+      for (let item in cart) {
+        totalQty += cart[item][0];
 
-        for (let item in cart) {
-          totalQty += cart[item][0];
+        const div = document.getElementById("div" + item);
+        if (!div) continue;
 
-          const div = document.getElementById("div" + item);
-          if (!div) continue;
+        div.innerHTML = `
+          <div class="d-flex align-items-center justify-content-between w-100" style="border: 1px solid #eee; border-radius: 50px; padding: 4px; background: #fff;">
+            <button class="btn btn-sm minus rounded-circle" style="width: 34px; height: 34px; background: #f5f5f5; color: #111; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" data-id="${item}">−</button>
+            <span class="fw-bold mx-2" style="font-size: 0.95rem; color: #111;">${cart[item][0]}</span>
+            <button class="btn btn-sm plus rounded-circle" style="width: 34px; height: 34px; background: #111; color: #fff; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" data-id="${item}">+</button>
+          </div>
+        `;
+        div.style.display = "flex";
+      }
 
-          div.innerHTML = `
-        <button class="btn btn-success btn-sm minus" data-id="${item}">−</button>
-        <span class="mx-2">${cart[item][0]}</span>
-        <button class="btn btn-success btn-sm plus" data-id="${item}">+</button>
-        <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" class="btn btn-success btn-sm">Checkout</a>
-      `;
-          div.style.display = "flex";
-          div.style.justifyContent = "space-between";
-          div.style.alignItems = "center";
-        }
-
+      if (cartCount) {
         cartCount.innerText = totalQty;
       }
+    }
 
-      /* =========================
-         UPDATE POPOVER
-      ========================== */
-      function updatePopover() {
+    /* =========================
+       UPDATE POPOVER
+    ========================= */
+    function updatePopover() {
+      if (!popover) return;
 
-        let html = `<h6>Your Cart</h6><div class="mb-2">`;
-        let i = 1;
-        let hasItems = false;
+      let html = `<h6 class="mb-3 fw-bold" style="color: #111;">Your Bag</h6><div class="mb-3">`;
+      let i = 1;
+      let hasItems = false;
 
-        for (let item in cart) {
-          if (cart[item][0] > 0) {
-            hasItems = true;
-            html += `<b>${i}.</b> ${cart[item][1].slice(0, 20)}
-        (<b>${cart[item][0]}</b>)<br>`;
-            i++;
-          }
+      for (let item in cart) {
+        if (cart[item][0] > 0) {
+          hasItems = true;
+          html += `<div style="font-size: 0.85rem; color: #767676; margin-bottom: 8px;">
+            <span class="fw-bold text-dark">${i}.</span> ${cart[item][1].slice(0, 20)} 
+            <span class="float-end fw-bold text-dark">x${cart[item][0]}</span>
+          </div>`;
+          i++;
         }
-
-        if (!hasItems) {
-          popover.hide();
-          return;
-        }
-
-        html += `
-          </div>
-          <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" 
-            class="btn btn-success btn-sm">Checkout</a>
-          <button class="btn btn-danger btn-sm ms-2" onclick="clearCart()">Clear</button>
-      `;
-
-        popover.setContent({ ".popover-body": html });
-        popover.show();
       }
 
-
-
-      /* =========================
-         SAVE CART
-      ========================== */
-
-      function saveCart() {
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCart(cart);
-      }
-
-      /* =========================
-         CLEAR CART (GLOBAL)
-      ========================== */
-
-      window.clearCart = function () {
-        cart = {};
-        localStorage.removeItem("cart");
-        cartCount.innerText = "0";
+      if (!hasItems) {
         popover.hide();
+        return;
+      }
 
-        document.querySelectorAll(".divpr").forEach(div => {
-          const id = div.id.replace("div", "");
-          div.innerHTML = `
-        <button id="${id}" style="width:100%;" class="btn btn-danger btn-sm cart">
-          Add To Cart
-        </button>
+      html += `
+        </div>
+        <div class="d-flex gap-2 mt-3 pt-3 border-top">
+          <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" 
+             class="btn w-100 fw-bold" style="background-color: #111; color: #fff; border-radius: 50px; font-size: 0.8rem; padding: 8px 0;">Checkout</a>
+          <button class="btn fw-bold" style="background-color: #f5f5f5; color: #111; border-radius: 50px; font-size: 0.8rem; padding: 8px 15px;" onclick="clearCart()">Clear</button>
+        </div>
       `;
-        });
-      };
 
-      document.querySelectorAll(".view-image").forEach(button => {
-        button.addEventListener("click", function () {
+      popover.setContent({ ".popover-body": html });
+      popover.show();
+    }
 
-          const imageUrl = this.dataset.image;
-          const productName = this.dataset.name;
+    /* =========================
+       SAVE CART
+    ========================= */
+    function saveCart() {
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCart(cart);
+    }
 
-          const modalImage = document.getElementById("modalImage");
-          const modalTitle = document.getElementById("imageModalLabel");
+    /* =========================
+       CLEAR CART (GLOBAL)
+    ========================= */
+    window.clearCart = function () {
+      cart = {};
+      localStorage.removeItem("cart");
+      if (cartCount) cartCount.innerText = "0";
+      if (popover) popover.hide();
 
-          modalTitle.textContent = productName;
-          modalImage.src = imageUrl;
+      document.querySelectorAll(".divpr").forEach(div => {
+        const id = div.id.replace("div", "");
+        div.innerHTML = `
+          <button id="${id}" class="btn-cart-pill cart">
+            Add To Bag
+          </button>
+        `;
+      });
+    };
 
-        });
+    /* =========================
+       MODAL IMAGE HANDLING
+    ========================= */
+    document.querySelectorAll(".view-image").forEach(button => {
+      button.addEventListener("click", function () {
+        const imageUrl = this.dataset.image;
+        const productName = this.dataset.name;
+        const modalImage = document.getElementById("modalImage");
+        const modalTitle = document.getElementById("imageModalLabel");
+
+        modalTitle.textContent = productName;
+        modalImage.src = imageUrl;
+      });
+    });
+
+    /* =========================
+       MULTI-IMAGE HOVER CYCLING
+    ========================= */
+    document.querySelectorAll(".product-card-hover").forEach(card => {
+      const imgElement = card.querySelector(".product-img");
+      if (!imgElement) return;
+
+      let images = [];
+      try {
+        images = JSON.parse(imgElement.getAttribute("data-images"));
+      } catch (e) {
+        return;
+      }
+
+      if (images.length <= 1) return;
+
+      let currentIndex = 0;
+      let intervalId = null;
+
+      card.addEventListener("mouseenter", function () {
+        currentIndex = 0;
+        intervalId = setInterval(() => {
+          currentIndex = (currentIndex + 1) % images.length;
+          imgElement.style.opacity = "0.7";
+          setTimeout(() => {
+            imgElement.src = images[currentIndex];
+            imgElement.style.opacity = "1";
+          }, 150);
+        }, 1500);
       });
 
-
-
+      card.addEventListener("mouseleave", function () {
+        clearInterval(intervalId);
+        intervalId = null;
+        currentIndex = 0;
+        imgElement.src = images[0];
+        imgElement.style.opacity = "1";
+      });
     });
-  </script>
-  {% endblock body %}
-</section>
+
+  });
+</script>
+{% endblock body %}

@@ -2,8 +2,7 @@ from decimal import Decimal
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator
-
-from django.conf import settings   # ✅ ALWAYS USE THIS
+from django.conf import settings 
 
 
 class Contact(models.Model):
@@ -16,9 +15,30 @@ class Contact(models.Model):
         return self.name
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
+
+
+class Subcategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        verbose_name_plural = "Subcategories"
+
+    def __str__(self):
+        return f"{self.category.name} — {self.name}"
+
+
 class Product(models.Model):
     product_name = models.CharField(max_length=50)
-    category = models.CharField(max_length=50, default="")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     subcategory = models.CharField(max_length=50, default="")
     price = models.IntegerField(default=0)
     OldPrice = models.IntegerField(default=0)
@@ -26,18 +46,36 @@ class Product(models.Model):
     desc = models.CharField(max_length=300)
     ShippingFee = models.IntegerField(default=0)
     Rating = models.IntegerField(default=0, validators=[MaxValueValidator(5)])
+
+    @property
+    def main_image(self):
+        first_img = self.additional_images.first()
+        return first_img.image.url if first_img else ''
+
+    @property
+    def image(self):
+        """Backward-compatible property so old template references to .image work smoothly."""
+        first_img = self.additional_images.first()
+        return first_img.image if first_img else None
+
+    def __str__(self):
+        return self.product_name
+
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='additional_images')
     image = models.ImageField(upload_to='shop/images/')
 
     def __str__(self):
-        return f'{self.id} | {self.product_name}'
-
-
+        return f"Image for {self.product.product_name}"
+    
 class Size(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
     
+
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
     size = models.ForeignKey(Size, on_delete=models.CASCADE)
@@ -48,6 +86,7 @@ class ProductVariant(models.Model):
     
     def __str__(self):
         return f"{self.product.id} | {self.product.product_name} | {self.size.name} | Stock: {self.stock}"
+
 
 class Orders(models.Model):
     items_json = models.JSONField()
@@ -67,7 +106,7 @@ class Orders(models.Model):
     amountpaid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     BookDate = models.DateTimeField(default=timezone.now)
 
-    payment_id = models.CharField(max_length=255, null=True, blank=True)  # razorpay_payment_id
+    payment_id = models.CharField(max_length=255, null=True, blank=True) 
     refund_id = models.CharField(max_length=255, null=True, blank=True)
     is_refunded = models.BooleanField(default=False)
 
@@ -89,12 +128,13 @@ class Orders(models.Model):
     def __str__(self):
         return f"Order #{self.id}"
 
-#Proxy model for Cancelled & Paid Orders
+
 class CancelledPaidOrder(Orders):
     class Meta:
         proxy = True
         verbose_name = "Refundable Orders"
         verbose_name_plural = "Refundable Orders"
+
 
 class OrderUpdate(models.Model):
     order = models.ForeignKey(

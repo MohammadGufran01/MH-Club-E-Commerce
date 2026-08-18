@@ -4,9 +4,10 @@ from django.contrib import messages
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 APPEND_SLASH = True
 
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'buyzoneapp.context_processors.global_categories',
             ],
         },
     },
@@ -112,6 +114,8 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = os.getenv("Email")
 EMAIL_HOST_PASSWORD = os.getenv("App_Password")
+print(EMAIL_HOST_USER)
+print(EMAIL_HOST_PASSWORD)
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 

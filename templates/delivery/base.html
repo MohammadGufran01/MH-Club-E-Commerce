@@ -3,25 +3,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>BuyZone Delivery Dashboard</title>
+  <title>MH Club Delivery Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <!-- Google Font: Inter / Jost -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Favicon -->
   <link rel="icon" href="{% static 'images/logo.png' %}" />
 
   <style>
+    :root {
+      --primary-dark: #111111;
+      --primary-light: #ffffff;
+      --bg-light: #f9f9f9;
+      --border-color: #eeeeee;
+      --text-muted: #767676;
+      --radius-lg: 16px;
+    }
+
     body {
       margin: 0;
-      font-family: "Poppins", sans-serif;
-      background: #eef2f7;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-light);
+      color: var(--primary-dark);
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     .layout {
@@ -29,88 +40,152 @@
       min-height: 100vh;
     }
 
-    /* Sidebar */
+    /* Minimalist Sidebar */
     .sidebar {
       width: 260px;
-      background: #212529;
-      color: #fff;
-      padding: 20px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 30px 20px;
       position: fixed;
       inset: 0 auto 0 0;
       z-index: 1050;
       transform: translateX(0);
       transition: transform 0.3s ease;
-    }
-
-    .sidebar a {
-      color: #fff;
-      text-decoration: none;
+      border-right: 1px solid var(--border-color);
     }
 
     .brand {
-      font-weight: 600;
-      font-size: 20px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--primary-dark);
     }
 
     .brand img {
-      height: 36px;
+      height: 22px;
       margin-right: 10px;
+      object-fit: contain;
     }
 
     .nav-link-custom {
-      display: block;
-      padding: 12px 14px;
-      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 50px;
       margin-bottom: 6px;
-      font-size: 14px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s ease;
     }
 
     .nav-link-custom:hover,
     .nav-link-custom.active {
-      background: rgba(255, 255, 255, 0.15);
+      color: var(--primary-dark);
+      background: var(--bg-light);
+      font-weight: 600;
     }
 
     .logout {
-      margin-top: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.05);
+      margin-top: 40px;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      text-align: center;
+      color: #d9534f !important;
+      border-radius: 50px;
+      justify-content: center;
+    }
+    
+    .logout:hover {
+      background: #d9534f !important;
+      color: #fff !important;
+      border-color: #d9534f;
     }
 
-    /* Main */
+    /* Main Content Area */
     .main {
       margin-left: 260px;
-      padding: 24px;
+      padding: 40px;
       flex: 1;
+      max-width: calc(100% - 260px);
     }
 
+    /* Mobile Topbar */
     .topbar {
-      background: #fff;
-      border-radius: 16px;
-      padding: 14px 18px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-      margin-bottom: 20px;
+      background: var(--primary-light);
+      border-bottom: 1px solid var(--border-color);
+      padding: 15px 20px;
+      margin-bottom: 30px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
+    }
+    
+    .topbar .brand {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
     }
 
+    /* Premium Data Card */
     .table-card {
-      background: #fff;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      background: var(--primary-light);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 30px;
       overflow-x: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    /* Mobile Menu Buttons */
+    #toggleSidebar, #closeSidebar {
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 10px;
+    }
+    #toggleSidebar {
+      background: var(--primary-dark);
+      color: var(--primary-light);
+      border: 1px solid var(--primary-dark);
+    }
+    #closeSidebar {
+      border: 1px solid var(--border-color);
+      color: var(--primary-dark);
+      background: transparent;
+    }
+
+    /* Alert Messages */
+    .alert {
+      border-radius: 12px;
+      background: var(--primary-dark);
+      color: var(--primary-light);
+      border: none;
+      font-size: 0.85rem;
+      padding: 1rem 1.5rem;
+    }
+    .btn-close {
+      filter: invert(1) grayscale(100%) brightness(200%);
     }
 
     /* Overlay */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.45);
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(2px);
       z-index: 1040;
       display: none;
     }
@@ -119,41 +194,23 @@
       display: block;
     }
 
-    /* Mobile */
+    /* Mobile Responsive */
     @media (max-width: 992px) {
       .sidebar {
         transform: translateX(-100%);
-        width: 100%;
+        width: 280px;
       }
-
       .sidebar.show {
         transform: translateX(0);
       }
-
       .main {
         margin-left: 0;
-        padding: 16px;
+        padding: 20px;
+        max-width: 100%;
       }
     }
 
-    @media (max-width: 480px) {
-      .brand {
-        font-size: 18px;
-      }
-
-      .brand img {
-        height: 30px;
-      }
-
-      .nav-link-custom {
-        padding: 14px;
-        font-size: 15px;
-      }
-
-      .sidebar button {
-        border-radius: 12px;
-      }
-    }
+    /* Full Page Loader - Minimalist */
     #page-loader {
       position: fixed;
       inset: 0;
@@ -163,9 +220,14 @@
       justify-content: center;
       z-index: 2000;
     }
-
     #page-loader.show {
       display: flex;
+    }
+    .spinner-mh {
+      color: var(--primary-dark);
+      width: 2.5rem;
+      height: 2.5rem;
+      border-width: 0.2em;
     }
   </style>
 </head>
@@ -176,48 +238,57 @@
   <div class="layout">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-      <button class="btn btn-outline-light w-100 mb-3 d-lg-none" id="closeSidebar">
+      <button class="btn w-100 mb-4 d-lg-none" id="closeSidebar">
         ✕ Close Menu
       </button>
 
       <div class="brand">
-        <img src="{% static 'images/logo.png' %}" alt="BuyZone" />
-        BuyZone
+        <img src="{% static 'images/logo.png' %}" alt="MH Club" onerror="this.style.display='none'" />
+        MH CLUB
       </div>
 
-      <nav>
-        <a href="/delivery/dashboard/" class="nav-link-custom">Dashboard</a>
-        <a href="/delivery/return/" class="nav-link-custom">Orders for Return</a>
-        <a href="/delivery/stats/" class="nav-link-custom">Summary</a>
+      <nav class="d-flex flex-column gap-1">
+        <a href="/delivery/dashboard/" class="nav-link-custom"><i class="bi bi-grid me-2"></i> Dashboard</a>
+        <a href="/delivery/return/" class="nav-link-custom"><i class="bi bi-arrow-return-left me-2"></i> Returns</a>
+        <a href="/delivery/stats/" class="nav-link-custom"><i class="bi bi-bar-chart me-2"></i> Summary</a>
       </nav>
 
-      <a href="{% url 'auth:handlelogout' %}" class="nav-link-custom logout">Logout</a>
+      <a href="{% url 'auth:handlelogout' %}" class="nav-link-custom logout"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
     </aside>
 
     <!-- Main -->
     <main class="main">
       <!-- Mobile Topbar -->
-      <div class="topbar d-lg-none">
+      <div class="topbar d-lg-none rounded-3">
         <div class="brand">
-          <img src="{% static 'images/logo.png' %}" alt="BuyZone" />
-          BuyZone
+          <img src="{% static 'images/logo.png' %}" alt="MH Club" onerror="this.style.display='none'" />
+          MH CLUB
         </div>
-        <button class="btn btn-dark w-100" id="toggleSidebar">☰ Open Menu</button>
+        <button class="btn w-100" id="toggleSidebar">☰ Menu</button>
       </div>
 
       <!-- Messages -->
       {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-        {{ message }}
-        <button class="btn-close" data-bs-dismiss="alert"></button>
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4 d-flex justify-content-between align-items-center">
+        <span>{{ message }}</span>
+        <button type="button" class="btn-close m-0" data-bs-dismiss="alert"></button>
       </div>
       {% endfor %}
 
-      <!-- Page Content -->
-      <div class="table-card">{% block main %}{% endblock %}</div>
+      <!-- Page Content Block -->
+      <div class="table-card">
+        {% block main %}{% endblock %}
+      </div>
     </main>
   </div>
 
+  <!-- Full Page Loader -->
+  <div id="page-loader">
+    <div class="spinner-border spinner-mh" role="status"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
@@ -227,13 +298,13 @@
     function openSidebar() {
       sidebar.classList.add("show");
       overlay.classList.add("show");
-      toggleBtn.innerText = "✕ Close Menu";
+      if (toggleBtn) toggleBtn.innerText = "✕ Close Menu";
     }
 
     function closeSidebar() {
       sidebar.classList.remove("show");
       overlay.classList.remove("show");
-      toggleBtn.innerText = "☰ Open Menu";
+      if (toggleBtn) toggleBtn.innerText = "☰ Menu";
     }
 
     toggleBtn?.addEventListener("click", () => {
@@ -243,62 +314,45 @@
     closeBtn?.addEventListener("click", closeSidebar);
     overlay.addEventListener("click", closeSidebar);
 
-    // Active link
+    // Active link highlighting
     document.querySelectorAll(".nav-link-custom").forEach(link => {
       if (link.getAttribute("href") === window.location.pathname) {
         link.classList.add("active");
       }
     });
+
+    /* Loader Logic */
+    document.addEventListener("DOMContentLoaded", function () {
+      const loader = document.getElementById("page-loader");
+      if (!loader) return;
+
+      function showLoader() {
+        loader.classList.add("show");
+      }
+
+      function hideLoader() {
+        loader.classList.remove("show");
+      }
+
+      window.addEventListener("load", hideLoader);
+      window.addEventListener("pageshow", hideLoader);
+
+      document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function (e) {
+          const href = link.getAttribute("href");
+          if (!href || href === "#" || href.startsWith("javascript:")) return;
+          if (link.closest("#sidebar") && link.hasAttribute("id")) return;
+          if (link.target === "_blank") return;
+          showLoader();
+        });
+      });
+
+      document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", () => {
+          showLoader();
+        });
+      });
+    });
   </script>
-  <div id="page-loader">
-    <div class="spinner-border text-primary" role="status"></div>
-  </div>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-
-  const loader = document.getElementById("page-loader");
-  if (!loader) return;
-
-  function showLoader() {
-    loader.classList.add("show");
-  }
-
-  function hideLoader() {
-    loader.classList.remove("show");
-  }
-
-  /* Always hide loader on load / back */
-  window.addEventListener("load", hideLoader);
-  window.addEventListener("pageshow", hideLoader);
-
-  /* Show loader on link click */
-  document.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", function (e) {
-
-      const href = link.getAttribute("href");
-
-      /* Ignore invalid / fake links */
-      if (!href || href === "#" || href.startsWith("javascript:")) return;
-
-      /* Ignore sidebar toggle buttons */
-      if (link.closest("#sidebar") && link.hasAttribute("id")) return;
-
-      /* Ignore new tab */
-      if (link.target === "_blank") return;
-
-      showLoader();
-    });
-  });
-
-  /* Show loader on form submit (future-proof) */
-  document.querySelectorAll("form").forEach(form => {
-    form.addEventListener("submit", () => {
-      showLoader();
-    });
-  });
-
-});
-</script>
-
 </body>
 </html>

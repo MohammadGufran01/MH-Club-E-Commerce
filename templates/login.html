@@ -1,226 +1,256 @@
 {% extends "base.html" %}
 
 {% block title %}
-  Login
+  Log In | MH Club
 {% endblock title %}
+
 {% block content %}
+<style>
+  :root {
+    --bg-main: #ffffff;
+    --bg-muted: #f9f9f9;
+    --text-main: #111111;
+    --text-muted: #767676;
+    --border-color: #eeeeee;
+    --radius-pill: 50px;
+  }
 
-<div class="card bg-light p-3 mt-3">
+  body {
+    background-color: var(--bg-main);
+  }
 
-  {% for message in messages %}
-      <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-        <strong>{{message}}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+  .auth-wrapper {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .auth-container {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-main);
+    padding: 2rem 0;
+  }
+
+  .auth-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .auth-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-muted);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-control:focus {
+    background-color: var(--bg-main);
+    border-color: var(--text-main);
+    box-shadow: none;
+  }
+
+  .btn-submit-pill {
+    background-color: var(--text-main);
+    color: var(--bg-main);
+    border-radius: var(--radius-pill);
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid var(--text-main);
+    width: 100%;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    margin-top: 1rem;
+  }
+
+  .btn-submit-pill:hover:not(:disabled) {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+  }
+
+  .auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .auth-footer a {
+    color: var(--text-main);
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .auth-footer a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="auth-wrapper">
+  <div class="auth-container">
+    
+    <!-- Alerts -->
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show text-uppercase text-center mb-4" style="background-color: #111; color: #fff; border-radius: 50px; border: none; letter-spacing: 1px; font-size: 0.8rem; padding: 10px 30px;" role="alert">
+      <strong>{{message}}</strong>
+      <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="close" style="font-size: 0.7rem;"></button>
+    </div>
+    {% endfor %}
+
+    <h3 class="auth-title" data-aos="fade-up">Welcome Back</h3>
+    <p class="auth-subtitle" data-aos="fade-up" data-aos-delay="50">Log in to your MH Club account.</p>
+
+    <form action="/auth/login/" method="post" id="login-form" data-aos="fade-up" data-aos-delay="100">
+      {% csrf_token %}
+      
+      <label for="email" class="form-label">Email Address</label>
+      <input type="email" class="form-control" id="email" name="email" required placeholder="name@example.com">
+      
+      <label for="pass1" class="form-label">Password</label>
+      <input type="password" class="form-control" id="pass1" name="pass1" required placeholder="••••••••">
+      
+      <button id="submit-btn" type="submit" class="btn-submit-pill">Log In</button>
+      <button style="display:none;" id="btn-loading" class="btn-submit-pill" type="button" disabled>
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Logging In...
+      </button>
+
+      <div class="auth-footer">
+        <a href="/auth/request-reset-email/" style="font-weight: 500; color: var(--text-muted);">Forgot your password?</a>
+        <span>Don't have an account? <a href="/auth/signup/">Sign up here</a></span>
       </div>
-      {% endfor %}
+    </form>
 
-  <h3 data-aos="fade-up" class="text-dark" style="font-weight:800;">Login</h3>
-
-  <form action="/auth/login/" method="post" >
-    {% csrf_token %}
-    <br>
-    <label for="email">Email:</label>
-    <div class="form-group">
-      <input type="email" class="form-control" id"email" name="email" required></input>
-    </div>
-    <label for="pass1">Password:</label>
-    <div class="form-group">
-      <input type="password" class="form-control" id"pass1" name="pass1" required></input>
-    </div>
-    <br>
-    <button id="submit-btn" type="submit" class="btn btn-dark">Login</button>
-    <button style="display:none;" class="btn btn-dark" type="button" disabled>
-      <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-      SingIn...
-    </button>
-    <br>
-    <br>
-     <span> Forget Password <a href="/auth/request-reset-email/">Reset</a> </span>
-    <br>
-    <br>
-    Don't have account? <a href="/auth/signup/">Sign-Up</a>
-    <br>
-  
-  </form>
+  </div>
 </div>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
 
-      /* =========================
-         CART INITIALIZATION
-      ========================== */
+    /* =========================
+       SUBMIT BUTTON LOGIC
+    ========================== */
+    let form = document.getElementById("login-form");
+    let submitBtn = document.getElementById("submit-btn");
+    let loadingBtn = document.getElementById("btn-loading");
 
-      let cart = localStorage.getItem("cart")
-        ? JSON.parse(localStorage.getItem("cart"))
-        : {};
+    submitBtn.addEventListener("click", function (e) {
+      if (form.checkValidity()) {
+        submitBtn.style.display = "none";
+        loadingBtn.style.display = "inline-block";
+      }
+    });
 
-      const cartCount = document.getElementById("cart");
-      const popcart = document.getElementById("popcart");
+    /* =========================
+       CART INITIALIZATION (GLOBAL)
+    ========================== */
+    let cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : {};
+    const cartCount = document.getElementById("cart");
+    const popcart = document.getElementById("popcart");
 
-      const popover = new bootstrap.Popover(popcart, {
+    let popover = null;
+    if(popcart) {
+      popover = new bootstrap.Popover(popcart, {
         html: true,
         trigger: "button",
-        sanitize: false,     // 🔥 REQUIRED for <button>
+        sanitize: false, 
         placement: "bottom",
-        content: "Your cart is empty"
+        content: "Your bag is empty"
       });
+    }
 
-      updateCart(cart);
+    updateCart(cart);
 
-      /* =========================
-         ADD TO CART
-      ========================== */
+    /* =========================
+       UPDATE CART UI
+    ========================== */
+    function updateCart(cart) {
+      let totalQty = 0;
+      for (let item in cart) {
+        totalQty += cart[item][0];
+      }
+      if(cartCount) cartCount.innerText = totalQty;
+    }
 
-      document.addEventListener("click", function (e) {
-        if (!e.target.classList.contains("cart")) return;
+    /* =========================
+       UPDATE POPOVER
+    ========================== */
+    function updatePopover() {
+      if(!popover) return;
 
-        const id = e.target.id; // pr1, pr2
-        const name = document.getElementById("name" + id).innerText;
-        const price = document.getElementById("price" + id).innerText;
-        const oldPrice = document.getElementById("oldprice" + id).innerText;
-        const discount = document.getElementById("discount" + id).innerText;
+      let html = `<h6 class="mb-3 fw-bold" style="color: #111;">Your Bag</h6><div class="mb-3">`;
+      let i = 1;
+      let hasItems = false;
 
-        if (cart[id]) {
-          cart[id][0]++;
-        } else {
-          cart[id] = [1, name, price, oldPrice, discount];
+      for (let item in cart) {
+        if (cart[item][0] > 0) {
+          hasItems = true;
+          html += `<div style="font-size: 0.85rem; color: #767676; margin-bottom: 8px;">
+            <span class="fw-bold text-dark">${i}.</span> ${cart[item][1].slice(0, 20)} 
+            <span class="float-end fw-bold text-dark">x${cart[item][0]}</span>
+          </div>`;
+          i++;
         }
-
-        saveCart();
-        updatePopover();
-      });
-
-
-      /* =========================
-         PLUS / MINUS BUTTONS
-      ========================== */
-
-      document.addEventListener("click", function (e) {
-
-        if (e.target.classList.contains("plus")) {
-          const id = e.target.dataset.id;
-          cart[id][0]++;
-        }
-
-        if (e.target.classList.contains("minus")) {
-          const id = e.target.dataset.id;
-          cart[id][0]--;
-
-          // ✅ WHEN QTY BECOMES 0 → REMOVE ITEM & SHOW ADD TO CART
-          if (cart[id][0] <= 0) {
-            delete cart[id];
-
-            const div = document.getElementById("div" + id);
-            if (div) {
-              div.innerHTML = `
-          <button id="${id}" class="btn btn-danger btn-sm w-100 cart">
-            Add To Cart <i class="fa-solid fa-cart-shopping"></i>
-          </button>
-        `;
-            }
-          }
-        }
-
-        saveCart();
-        updatePopover();
-      });
-
-      /* =========================
-         UPDATE CART UI
-      ========================== */
-
-      function updateCart(cart) {
-        let totalQty = 0;
-
-        for (let item in cart) {
-          totalQty += cart[item][0];
-
-          const div = document.getElementById("div" + item);
-          if (!div) continue;
-
-          div.innerHTML = `
-        <button class="btn btn-success btn-sm minus" data-id="${item}">−</button>
-        <span class="mx-2">${cart[item][0]}</span>
-        <button class="btn btn-success btn-sm plus" data-id="${item}">+</button>
-        <a href="/checkout/" class="btn btn-success btn-sm">Checkout</a>
-      `;
-          div.style.display = "flex";
-          div.style.justifyContent = "space-between";
-          div.style.alignItems = "center";
-        }
-
-        cartCount.innerText = totalQty;
       }
 
-      /* =========================
-         UPDATE POPOVER
-      ========================== */
-      function updatePopover() {
-
-        let html = `<h6>Your Cart</h6><div class="mb-2">`;
-        let i = 1;
-        let hasItems = false;
-
-        for (let item in cart) {
-          if (cart[item][0] > 0) {
-            hasItems = true;
-            html += `<b>${i}.</b> ${cart[item][1].slice(0, 20)}
-        (<b>${cart[item][0]}</b>)<br>`;
-            i++;
-          }
-        }
-
-        // 🚫 No items with quantity > 0
-        if (!hasItems) {
-          popover.hide();
-          return;
-        }
-
-        html += `
-    </div>
-    <a href="/checkout/" class="btn btn-success btn-sm">Checkout</a>
-    <button class="btn btn-danger btn-sm ms-2" onclick="clearCart()">Clear</button>
-  `;
-
-        popover.setContent({ ".popover-body": html });
-        popover.show();
-      }
-
-
-
-      /* =========================
-         SAVE CART
-      ========================== */
-
-      function saveCart() {
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCart(cart);
-      }
-
-      /* =========================
-         CLEAR CART (GLOBAL)
-      ========================== */
-
-      window.clearCart = function () {
-        cart = {};
-        localStorage.removeItem("cart");
-        cartCount.innerText = "0";
+      if (!hasItems) {
         popover.hide();
+        return;
+      }
 
-        document.querySelectorAll(".divpr").forEach(div => {
-          const id = div.id.replace("div", "");
-          div.innerHTML = `
-        <button id="${id}" class="btn btn-danger btn-sm cart">
-          Add To Cart <i class="fa-solid fa-cart-shopping"></i>
-        </button>
+      html += `
+        </div>
+        <div class="d-flex gap-2 mt-3 pt-3 border-top">
+          <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" class="btn w-100 fw-bold" style="background-color: #111; color: #fff; border-radius: 50px; font-size: 0.8rem; padding: 10px 0;">Checkout</a>
+          <button class="btn fw-bold" style="background-color: #f5f5f5; color: #111; border-radius: 50px; font-size: 0.8rem; padding: 10px 15px;" onclick="clearCart()">Clear</button>
+        </div>
       `;
-        });
-      };
-    });
-    let submitBtn = document.getElementById("submit-btn");
-      submitBtn.addEventListener("click", function () {
-        submitBtn.style.display = "none";
-        submitBtn.nextElementSibling.style.display = "inline-block";
-      });
-  </script>
+
+      popover.setContent({ ".popover-body": html });
+      popover.show();
+    }
+
+    /* =========================
+       CLEAR CART (GLOBAL)
+    ========================== */
+    window.clearCart = function () {
+      cart = {};
+      localStorage.removeItem("cart");
+      if(cartCount) cartCount.innerText = "0";
+      if(popover) popover.hide();
+    };
+
+  });
+</script>
 {% endblock content %}

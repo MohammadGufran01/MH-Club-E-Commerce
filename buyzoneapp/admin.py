@@ -1,46 +1,65 @@
 import json
 from django.contrib import admin, messages
 from django.utils.html import format_html
-
 from .models import (
     Product,
+    ProductImage,
+    ProductVariant,
+    Size,
     Orders,
-    CancelledPaidOrder,
     OrderUpdate,
     Contact,
-    ProductVariant,
-    Size
+    CancelledPaidOrder,
+    Category,
+    Subcategory
 )
-
 from .utils.refund import refund_payment
 
 
-# ==================== CATEGORY FILTER ====================
+# ==================== CATEGORY & SUBCATEGORY ADMIN ====================
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    search_fields = ('name',)
+
+
+@admin.register(Subcategory)
+class SubcategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'category')
+    list_filter = ('category',)
+    search_fields = ('name', 'category__name')
+
+
+# ==================== CATEGORY FILTER FOR PRODUCTS ====================
 
 class CategoryFilter(admin.SimpleListFilter):
     title = 'Category'
     parameter_name = 'category'
 
     def lookups(self, request, model_admin):
-        categories = (
-            model_admin.model.objects
-            .values_list('category', flat=True)
-            .distinct()
-            .order_by('category')
-        )
-        return [(c, c) for c in categories if c]
+        # Fetch category names from Category model
+        return [(c.id, c.name) for c in Category.objects.all()]
 
     def queryset(self, request, queryset):
         if self.value():
-            return queryset.filter(category=self.value())
+            return queryset.filter(category_id=self.value())
         return queryset
 
 
-# ==================== PRODUCT ADMIN ====================
+
+# ==================== ADMIN IMAGE ====================
+
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 3  
+
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 1
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-
     list_display = (
         'id',
         'product_image',
@@ -56,12 +75,14 @@ class ProductAdmin(admin.ModelAdmin):
         ('Basic Info', {'fields': ('product_name', 'category', 'subcategory')}),
         ('Pricing', {'fields': ('price', 'OldPrice', 'Discount', 'ShippingFee')}),
         ('Status', {'fields': ('Rating',)}),
-        ('Description & Image', {'fields': ('desc', 'image')}),
+        ('Description', {'fields': ('desc',)}),  # Removed standalone 'image' field
     )
 
-    list_filter = (CategoryFilter, 'Rating')
-    search_fields = ('product_name', 'category', 'subcategory', 'id')
+    inlines = [ProductImageInline, ProductVariantInline]
+    
+    search_fields = ('product_name', 'category__name', 'subcategory__name', 'id')
     list_display_links = ('id',)
+    list_filter = (CategoryFilter, 'Rating')
 
     def price_display(self, obj):
         return format_html(
@@ -78,15 +99,16 @@ class ProductAdmin(admin.ModelAdmin):
         return "⭐" * obj.Rating if obj.Rating else "-"
     rating_stars.short_description = "Rating"
 
-    @admin.display(description="Image")
+    @admin.display(description="Main Image")
     def product_image(self, obj):
-        if obj.image and hasattr(obj.image, 'url'):
+        # Pulls the thumbnail from the first item in the multi-image inline
+        first_img = obj.additional_images.first()
+        if first_img and first_img.image and hasattr(first_img.image, 'url'):
             return format_html(
-                '<img src="{}" loading="lazy" width="50" style="border-radius:8px;"/>',
-                obj.image.url
+                '<img src="{}" loading="lazy" width="50" height="50" style="border-radius:8px; object-fit:cover;"/>',
+                first_img.image.url
             )
         return "—"
-
 
 # ==================== SIZE ADMIN ====================
 
@@ -112,7 +134,6 @@ class ProductVariantAdmin(admin.ModelAdmin):
 
 @admin.register(OrderUpdate)
 class OrderUpdateAdmin(admin.ModelAdmin):
-
     list_display = ('order_oid', 'short_update', 'delivered', 'update_date')
     list_editable = ('delivered',)
     list_filter = ('delivered', 'update_date')
@@ -135,7 +156,6 @@ class OrderUpdateAdmin(admin.ModelAdmin):
 
 @admin.register(Orders)
 class OrdersAdmin(admin.ModelAdmin):
-
     list_display = ('oid', 'amount', 'paymentstatus', 'BookDate', 'amountpaid')
     list_editable = ('paymentstatus',)
     list_display_links = ('oid',)
@@ -223,7 +243,6 @@ class OrdersAdmin(admin.ModelAdmin):
 
 @admin.register(CancelledPaidOrder)
 class CancelledPaidOrderAdmin(admin.ModelAdmin):
-
     actions = ['refund_selected_orders']
 
     list_display = (
@@ -251,21 +270,11 @@ class CancelledPaidOrderAdmin(admin.ModelAdmin):
     )
 
     fieldsets = (
-        ('Customer Info', {
-            'fields': ('name', 'email', 'phone')
-        }),
-        ('Address', {
-            'fields': ('address1', 'address2', 'city', 'state', 'zip_code')
-        }),
-        ('Order Items', {
-            'fields': ('items_json_formatted',),
-        }),
-        ('Payment', {
-            'fields': ('amount', 'amountpaid', 'paymentstatus', 'BookDate')
-        }),
-        ('Refund', {
-            'fields': ('refund_status', 'payment_id', 'refund_id')
-        }),
+        ('Customer Info', {'fields': ('name', 'email', 'phone')}),
+        ('Address', {'fields': ('address1', 'address2', 'city', 'state', 'zip_code')}),
+        ('Order Items', {'fields': ('items_json_formatted',)}),
+        ('Payment', {'fields': ('amount', 'amountpaid', 'paymentstatus', 'BookDate')}),
+        ('Refund', {'fields': ('refund_status', 'payment_id', 'refund_id')}),
     )
 
     def get_queryset(self, request):
@@ -274,7 +283,6 @@ class CancelledPaidOrderAdmin(admin.ModelAdmin):
             amountpaid__gt=0
         )
 
-    # ✅ MISSING METHOD (THIS FIXES YOUR ERROR)
     def items_json_formatted(self, obj):
         if not obj.items_json:
             return "-"
@@ -284,7 +292,6 @@ class CancelledPaidOrderAdmin(admin.ModelAdmin):
 
         for pid, values in data.items():
             qty, name, price, mrp, discount, size = values
-
             product_id = int(str(pid).replace("pr", "")) if str(pid).startswith("pr") else int(pid)
             product = Product.objects.filter(id=product_id).first()
 
@@ -294,16 +301,7 @@ class CancelledPaidOrderAdmin(admin.ModelAdmin):
             )
 
             html += f"""
-            <div style="
-                display:flex;
-                gap:16px;
-                margin-bottom:12px;
-                padding:12px;
-                border:1px solid #e0e0e0;
-                border-radius:10px;
-                background:#fdfdfd;
-                align-items:center;
-            ">
+            <div style="display:flex;gap:16px;margin-bottom:12px;padding:12px;border:1px solid #e0e0e0;border-radius:10px;background:#fdfdfd;align-items:center;">
               <div>
                 <b>{name}</b><br>
                 <span style="color:#0d6efd;">Qty:</span> {qty}<br>
@@ -326,16 +324,12 @@ class CancelledPaidOrderAdmin(admin.ModelAdmin):
 
     def refund_selected_orders(self, request, queryset):
         for order in queryset:
-
             if order.is_refunded:
                 messages.warning(request, f"Order {order.oid} already refunded")
                 continue
 
             if not order.payment_id:
-                messages.warning(
-                    request,
-                    f"COD Order {order.oid}: Refund handled manually"
-                )
+                messages.warning(request, f"COD Order {order.oid}: Refund handled manually")
                 continue
 
             try:
@@ -349,14 +343,9 @@ class CancelledPaidOrderAdmin(admin.ModelAdmin):
                     update_desc=f"Refund completed. Refund ID: {res['id']}",
                     delivered=False
                 )
-
                 messages.success(request, f"Refund successful for Order {order.oid}")
-
             except Exception as e:
-                messages.error(
-                    request,
-                    f"Refund failed for Order {order.oid}: {str(e)}"
-                )
+                messages.error(request, f"Refund failed for Order {order.oid}: {str(e)}")
 
     refund_selected_orders.short_description = "Refund Selected Orders"
 
@@ -371,7 +360,6 @@ class CancelledPaidOrderAdmin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-
     list_display = ('name', 'email_link', 'phone_display')
     search_fields = ('name', 'email', 'phoneNo')
 
@@ -385,4 +373,3 @@ class ContactAdmin(admin.ModelAdmin):
     def phone_display(self, obj):
         return obj.phoneNo
     phone_display.short_description = "Phone"
-# ==================== REFUND LOGIC IN ORDER ADMIN ====================

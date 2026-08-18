@@ -1,267 +1,397 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %} Contact {% endblock title %}
+{% block title %} Contact Us | MH Club {% endblock title %}
 
 {% block content %}
-<h3
-  data-aos="fade-up"
-  class="text-white font-weight-bold text-center"
-  style="width: 100%; font-weight: 800"
->
-  Welcome to Contact us!
-</h3>
- {% endblock content %}
+<style>
+  :root {
+    --bg-main: #ffffff;
+    --bg-muted: #f9f9f9;
+    --text-main: #111111;
+    --text-muted: #767676;
+    --border-color: #eeeeee;
+    --radius-pill: 50px;
+    --radius-lg: 24px;
+  }
 
+  body {
+    background-color: var(--bg-main);
+  }
+
+  /* Contact Hero */
+  .contact-hero {
+    background-color: var(--bg-muted);
+    padding: 4rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 4rem;
+  }
+  .contact-title {
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Split Layout Styling */
+  .contact-info-block {
+    padding-right: 2rem;
+  }
+  .contact-info-title {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+  }
+  .contact-info-text {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+  }
+  
+  .contact-detail-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+  .contact-detail-icon {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    margin-right: 1rem;
+    margin-top: 2px;
+  }
+  .contact-detail-text strong {
+    display: block;
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .contact-detail-text span {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  /* Form Styling */
+  .contact-form-card {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  }
+
+  .form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-control {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-muted);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    margin-bottom: 1.5rem;
+  }
+  
+  textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .form-control:focus {
+    background-color: var(--bg-main);
+    border-color: var(--text-main);
+    box-shadow: none;
+  }
+
+  .btn-submit-pill {
+    background-color: var(--text-main);
+    color: var(--bg-main);
+    border-radius: var(--radius-pill);
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid var(--text-main);
+    width: 100%;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-submit-pill:hover {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+  }
+
+  @media (max-width: 991px) {
+    .contact-info-block { padding-right: 0; margin-bottom: 3rem; text-align: center; }
+    .contact-detail-item { flex-direction: column; align-items: center; text-align: center; }
+    .contact-detail-icon { margin-right: 0; margin-bottom: 10px; font-size: 1.5rem; }
+    .contact-form-card { padding: 2rem 1.5rem; }
+    .contact-title { font-size: 2.5rem; }
+  }
+</style>
+
+<div class="contact-hero" data-aos="fade-in">
+  <h1 class="contact-title">Get in Touch</h1>
+  <p class="text-muted mb-0">We are here to help with any questions or concerns.</p>
+</div>
+{% endblock content %}
 
 {% block body %}
+<div class="container" style="max-width: 1100px; margin-bottom: 5rem;">
 
-<h2 class="text-center mt-3">Contact Us</h2>
+  <!-- Alerts -->
+  {% for message in messages %}
+  <div class="alert alert-{{message.tags}} alert-dismissible fade show text-uppercase text-center mb-5" style="background-color: #111; color: #fff; border-radius: 50px; border: none; letter-spacing: 1px; font-size: 0.8rem; padding: 10px 30px; max-width: 600px; margin: 0 auto;" role="alert">
+    <strong>{{message}}</strong>
+    <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="close" style="font-size: 0.7rem;"></button>
+  </div>
+  {% endfor %}
 
-<div class="container">
+  <div class="row align-items-center">
+    
+    <!-- LEFT COLUMN: Contact Information -->
+    <div class="col-12 col-lg-5" data-aos="fade-right">
+      <div class="contact-info-block">
+        <h2 class="contact-info-title">Let's Connect.</h2>
+        <p class="contact-info-text">
+          Whether you have a question about shipping, returns, sizing, or anything else, our team is ready to answer all your questions.
+        </p>
 
-    {% for message in messages %}
-        <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-            <strong>{{message}}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+        <div class="contact-detail-item">
+          <i class="bi bi-geo-alt contact-detail-icon"></i>
+          <div class="contact-detail-text">
+            <strong>Headquarters</strong>
+            <span>Sakinaka, Mumbai 400072, India</span>
+          </div>
         </div>
-        {% endfor %}
 
-    <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
-                
-                <form action="/contact/" method="post" >
-                  {% csrf_token %}
-                  <br>
-                  <label for="name">Full name:</label>
-                  <div class="form-group">
-                    <input type="text" value="{{user.first_name}}" class="form-control" id="name" name="name" required></input>
-                  </div>
-                  <label for="email">Email:</label>
-                  <div class="form-group">
-                    <input type="email" value="{{user.email}}" class="form-control" id="email" name="email" required></input>
-                  </div>
-                  <label for="desc">How can i help You?</label>
-                  <div class="form-group">
-                    <textarea type="text" class="form-control" id="desc" name="desc" required></textarea>
-                  </div>
-                  <label for="number">Phone Number:</label>
-                  <div class="form-group">
-                    <input type="number" value={{order.phone}} class="form-control" id="number" name="number" required></input>
-                  </div>
-                  <br>
-                  <button type="submit" class="btn btn-dark">Submit</button>    
-                  <br>
-                  <br>
-                  <br>
-                </form>
+        <div class="contact-detail-item">
+          <i class="bi bi-envelope contact-detail-icon"></i>
+          <div class="contact-detail-text">
+            <strong>Email Us</strong>
+            <span>buyzone@gmail.com</span>
+          </div>
         </div>
-        <div class="col-md-4"></div>
+
+        <div class="contact-detail-item">
+          <i class="bi bi-telephone contact-detail-icon"></i>
+          <div class="contact-detail-text">
+            <strong>Call Us</strong>
+            <span>+91 14 7650 2389</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-</div>
-<script>
-  if (localStorage.getItem('cart') == null) {
-    var cartItems = {};
-    updateCart(cartItems)
-} else {
-    var cartItems = JSON.parse(localStorage.getItem('cart'));
-    updateCart(cartItems);
-}
-function updateCart(cartItems){
-  var sum=0;
-  for(var item in cartItems){
-    document.getElementById('car')
-    sum = sum + cartItems[item][0];
-  }
-  localStorage.setItem('cart', JSON.stringify(cartItems));
-  document.getElementById('cart').innerHTML = sum;
-}
+    <!-- RIGHT COLUMN: Contact Form -->
+    <div class="col-12 col-lg-7" data-aos="fade-left">
+      <div class="contact-form-card">
+        
+        <form action="/contact/" method="post">
+          {% csrf_token %}
+          
+          <div class="row">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" value="{{ user.first_name }}" class="form-control" id="name" name="name" required placeholder="John Doe">
+            </div>
+            
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" value="{{ user.email }}" class="form-control" id="email" name="email" required placeholder="name@example.com">
+            </div>
+          </div>
 
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+          <label for="number" class="form-label">Phone Number</label>
+          <input type="number" value="{{ order.phone }}" class="form-control" id="number" name="number" required placeholder="Mobile Number">
 
-        /* =========================
-           CART INITIALIZATION
-        ========================== */
+          <label for="desc" class="form-label">How can we help you?</label>
+          <textarea class="form-control" id="desc" name="desc" required placeholder="Tell us more about your inquiry..."></textarea>
 
-        let cart = localStorage.getItem("cart")
-            ? JSON.parse(localStorage.getItem("cart"))
-            : {};
+          <button type="submit" class="btn-submit-pill mt-2">Send Message</button>
+        </form>
 
-        const cartCount = document.getElementById("cart");
-        const popcart = document.getElementById("popcart");
-
-        const popover = new bootstrap.Popover(popcart, {
-            html: true,
-            trigger: "button",     // SAME AS INDEX PAGE
-            sanitize: false,       // REQUIRED because we inject HTML
-            placement: "bottom",
-            content: "Your cart is empty"
-        });
-
-        updateCart(cart);
-
-
-        /* =========================
-           ADD TO CART
-        ========================== */
-
-        document.addEventListener("click", function (e) {
-
-            if (!e.target.classList.contains("cart")) return;
-
-            const id = e.target.id;
-            const name = document.getElementById("name" + id).innerText;
-            const price = document.getElementById("price" + id).innerText;
-            const oldPrice = document.getElementById("oldprice" + id).innerText;
-            const discount = document.getElementById("discount" + id).innerText;
-
-            if (cart[id]) {
-                cart[id][0]++;
-            } else {
-                cart[id] = [1, name, price, oldPrice, discount];
-            }
-
-            saveCart();
-            updatePopover();
-        });
-
-
-
-        /* =========================
-           UPDATE CART BUTTON UI
-        ========================== */
-
-        function updateCart(cart) {
-            let totalQty = 0;
-
-            for (let item in cart) {
-                totalQty += cart[item][0];
-
-                const div = document.getElementById("div" + item);
-                if (!div) continue;
-
-                div.innerHTML = `
-        <button class="btn btn-success btn-sm minus" data-id="${item}">−</button>
-        <span class="mx-2">${cart[item][0]}</span>
-        <button class="btn btn-success btn-sm plus" data-id="${item}">+</button>
-        <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" class="btn btn-success btn-sm">Checkout</a>
-      `;
-
-                div.style.display = "flex";
-                div.style.justifyContent = "space-between";
-                div.style.alignItems = "center";
-                div.style.width="100%";
-            }
-
-            cartCount.innerText = totalQty;
-        }
-
-
-
-        /* =========================
-           PLUS / MINUS BUTTONS
-        ========================== */
-
-        document.addEventListener("click", function (e) {
-
-            if (e.target.classList.contains("plus")) {
-                const id = e.target.dataset.id;
-                cart[id][0]++;
-            }
-
-            if (e.target.classList.contains("minus")) {
-                const id = e.target.dataset.id;
-                cart[id][0]--;
-
-                if (cart[id][0] <= 0) {
-                    delete cart[id];
-
-                    const div = document.getElementById("div" + id);
-                    if (div) {
-                        div.innerHTML = `
-            <button id="${id}" style="width:100%;" class="btn btn-danger btn-sm cart">
-              Add To Cart <i class="fa-solid fa-cart-shopping"></i>
-            </button>
-          `;
-                    }
-                }
-            }
-
-            saveCart();
-            updatePopover();
-        });
-
-
-
-        /* =========================
-           UPDATE POPOVER CONTENT
-        ========================== */
-
-        function updatePopover() {
-
-            let html = `<h6>Your Cart</h6><div class="mb-2">`;
-            let i = 1;
-            let hasItems = false;
-
-            for (let item in cart) {
-                if (cart[item][0] > 0) {
-                    hasItems = true;
-                    html += `<b>${i}.</b> ${cart[item][1].slice(0, 20)} (<b>${cart[item][0]}</b>)<br>`;
-                    i++;
-                }
-            }
-
-            if (!hasItems) {
-                popover.hide();
-                return;
-            }
-
-            html += `
       </div>
-      <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" class="btn btn-success btn-sm">Checkout</a>
-      <button class="btn btn-danger btn-sm ms-2" onclick="clearCart()">Clear</button>
-    `;
+    </div>
 
-            popover.setContent({ ".popover-body": html });
-            popover.show();
-        }
+  </div>
+</div>
 
+<!-- PREMIUM CART SCRIPT (SYNCED) -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
 
+    let cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : {};
+    const cartCount = document.getElementById("cart");
+    const popcart = document.getElementById("popcart");
 
-        /* =========================
-           SAVE CART
-        ========================== */
+    let popover = null;
+    if(popcart) {
+      popover = new bootstrap.Popover(popcart, {
+        html: true,
+        trigger: "button",
+        sanitize: false, 
+        placement: "bottom",
+        content: "Your bag is empty"
+      });
+    }
 
-        function saveCart() {
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateCart(cart);
-        }
+    updateCart(cart);
 
+    /* =========================
+       ADD TO CART
+    ========================== */
+    document.addEventListener("click", function (e) {
+      if (!e.target.classList.contains("cart")) return;
 
+      const id = e.target.id;
+      const name = document.getElementById("name" + id).innerText;
+      const price = document.getElementById("price" + id).innerText;
+      const oldPrice = document.getElementById("oldprice" + id) ? document.getElementById("oldprice" + id).innerText : "0";
+      const discount = document.getElementById("discount" + id) ? document.getElementById("discount" + id).innerText : "0";
 
-        /* =========================
-           CLEAR CART (GLOBAL)
-        ========================== */
+      if (cart[id]) {
+        cart[id][0]++;
+      } else {
+        cart[id] = [1, name, price, oldPrice, discount];
+      }
 
-        window.clearCart = function () {
-            cart = {};
-            localStorage.removeItem("cart");
-            cartCount.innerText = "0";
-            popover.hide();
-
-            document.querySelectorAll(".divpr").forEach(div => {
-                const id = div.id.replace("div", "");
-                div.innerHTML = `
-        <button id="${id}" style="width:100%;" class="btn btn-danger btn-sm cart">
-          Add To Cart  <i class="fa-solid fa-cart-shopping"></i>
-        </button>
-      `;
-            });
-        };
-
+      saveCart();
+      updatePopover();
     });
+
+    /* =========================
+       PLUS / MINUS BUTTONS
+    ========================== */
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("plus")) {
+        const id = e.target.dataset.id;
+        cart[id][0]++;
+      }
+
+      if (e.target.classList.contains("minus")) {
+        const id = e.target.dataset.id;
+        cart[id][0]--;
+
+        if (cart[id][0] <= 0) {
+          delete cart[id];
+          const div = document.getElementById("div" + id);
+          if (div) {
+            div.innerHTML = `
+              <button id="${id}" class="btn-cart-pill cart">
+                Add To Bag
+              </button>
+            `;
+          }
+        }
+      }
+
+      saveCart();
+      updatePopover();
+    });
+
+    /* =========================
+       UPDATE CART UI
+    ========================== */
+    function updateCart(cart) {
+      let totalQty = 0;
+
+      for (let item in cart) {
+        totalQty += cart[item][0];
+
+        const div = document.getElementById("div" + item);
+        if (!div) continue;
+
+        div.innerHTML = `
+          <div class="d-flex align-items-center justify-content-between w-100" style="border: 1px solid #eee; border-radius: 50px; padding: 4px; background: #fff;">
+            <button class="btn btn-sm minus rounded-circle" style="width: 34px; height: 34px; background: #f5f5f5; color: #111; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" data-id="${item}">−</button>
+            <span class="fw-bold mx-2" style="font-size: 0.95rem; color: #111;">${cart[item][0]}</span>
+            <button class="btn btn-sm plus rounded-circle" style="width: 34px; height: 34px; background: #111; color: #fff; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" data-id="${item}">+</button>
+          </div>
+        `;
+        div.style.display = "flex";
+      }
+
+      if(cartCount) {
+        cartCount.innerText = totalQty;
+      }
+    }
+
+    /* =========================
+       UPDATE POPOVER
+    ========================== */
+    function updatePopover() {
+      if(!popover) return;
+
+      let html = `<h6 class="mb-3 fw-bold" style="color: #111;">Your Bag</h6><div class="mb-3">`;
+      let i = 1;
+      let hasItems = false;
+
+      for (let item in cart) {
+        if (cart[item][0] > 0) {
+          hasItems = true;
+          html += `<div style="font-size: 0.85rem; color: #767676; margin-bottom: 8px;">
+            <span class="fw-bold text-dark">${i}.</span> ${cart[item][1].slice(0, 20)} 
+            <span class="float-end fw-bold text-dark">x${cart[item][0]}</span>
+          </div>`;
+          i++;
+        }
+      }
+
+      if (!hasItems) {
+        popover.hide();
+        return;
+      }
+
+      html += `
+        </div>
+        <div class="d-flex gap-2 mt-3 pt-3 border-top">
+          <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" class="btn w-100 fw-bold" style="background-color: #111; color: #fff; border-radius: 50px; font-size: 0.8rem; padding: 8px 0;">Checkout</a>
+          <button class="btn fw-bold" style="background-color: #f5f5f5; color: #111; border-radius: 50px; font-size: 0.8rem; padding: 8px 15px;" onclick="clearCart()">Clear</button>
+        </div>
+      `;
+
+      popover.setContent({ ".popover-body": html });
+      popover.show();
+    }
+
+    /* =========================
+       SAVE CART & CLEAR
+    ========================== */
+    function saveCart() {
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCart(cart);
+    }
+
+    window.clearCart = function () {
+      cart = {};
+      localStorage.removeItem("cart");
+      if(cartCount) cartCount.innerText = "0";
+      if(popover) popover.hide();
+
+      document.querySelectorAll(".divpr").forEach(div => {
+        const id = div.id.replace("div", "");
+        div.innerHTML = `
+          <button id="${id}" class="btn-cart-pill cart">
+            Add To Bag
+          </button>
+        `;
+      });
+    };
+  });
 </script>
 {% endblock body %}

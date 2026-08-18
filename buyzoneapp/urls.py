@@ -16,4 +16,6 @@ urlpatterns = [
     path('return_order/<str:order_id>/', views.return_order, name='return_order'),
     path('order_activity/<str:order_id>/', views.order_activity, name='order_activity'),
     path("search/", views.search, name="search"),
+    
+    path("api/live-search/", views.live_search_api, name="live_search_api"),
 ]

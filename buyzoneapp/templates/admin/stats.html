@@ -1,0 +1,41 @@
+{% extends "delivery/base.html" %}
+{% load static %}
+
+{% block title %}Delivery Summary | MH Club{% endblock %}
+
+{% block main %}
+<div class="mb-4 pb-4 border-bottom">
+  <h2 class="fw-bold mb-1" style="font-size: 2.0rem; letter-spacing: -1px; color: #111;">Delivery Summary</h2>
+  <p class="text-muted mb-0" style="font-size: 0.95rem;">Overview of fulfillment metrics, completed deliveries, and performance.</p>
+</div>
+
+<div class="row g-4 mb-5">
+  <div class="col-12 col-md-4">
+    <div class="p-4 rounded-4" style="background: #fff; border: 1px solid #eee;">
+      <div class="text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 8px;">Total Assigned</div>
+      <div class="fs-2 fw-bold text-dark">{{ total_assigned|default:0 }}</div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-4">
+    <div class="p-4 rounded-4" style="background: #fff; border: 1px solid #eee;">
+      <div class="text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 8px;">Delivered Successfully</div>
+      <div class="fs-2 fw-bold text-dark">{{ total_delivered|default:0 }}</div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-4">
+    <div class="p-4 rounded-4" style="background: #fff; border: 1px solid #eee;">
+      <div class="text-muted text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 8px;">Pending / Active</div>
+      <div class="fs-2 fw-bold text-dark">{{ total_pending|default:0 }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 p-4" style="background: #fff; border: 1px solid #eee; border-radius: 16px;">
+  <h5 class="fw-bold mb-3" style="font-size: 1.1rem; color: #111;">Fulfillment Performance</h5>
+  <p class="text-muted mb-0" style="font-size: 0.9rem;">
+    All metrics are calculated based on real-time order updates and delivery partner verifications.
+  </p>
+</div>
+{% endblock %}

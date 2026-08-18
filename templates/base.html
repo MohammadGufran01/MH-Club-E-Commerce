@@ -1,472 +1,609 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>
-    {% block title %}Ecommerce - {% endblock title %}
-  </title>
-  <meta name="description" content="Ecommerce website we deliver the products within 1 hours.">
-  <meta name="amazon,selling,flipcar,products" content="ecommerce">
-
-  <!-- Favicons -->
-  <link href="{% static '/images/logo.png' %}" rel="icon">
-  <link href="{% static '/assets/css/style.css' %}" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/xzoom/dist/xzoom.css" />
-
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.google.com" rel="preconnect" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="{% static '/assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <link href="{% static '/assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-  <link href="{% static '/assets/vendor/aos/aos.css' %}" rel="stylesheet">
-  <link href="{% static '/assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
-  <link href="{% static '/assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
-
-  <!-- Main CSS File -->
-  <link href="{% static '/assets/css/main.css' %}" rel="stylesheet">
-  <style>
-    {% block style %}
-
-      {% endblock style %}
-  </style>
-</head>
-
-<body class="index-page">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MH Club | Premium Fashion{% endblock %}</title>
 
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <!-- AOS Animation Library CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg-main: #ffffff;
+      --text-main: #111111;
+      --text-muted: #767676;
+      --pill-bg: #f5f5f5;
+      --pill-border: #eeeeee;
+      --hero-radius: 24px;
+    }
 
-<!-- ======= Header ======= -->
- 
-<header id="header" class="header d-flex align-items-center fixed-top" data-aos="fade-up">
-  <div class="container-fluid container-xl d-flex align-items-center gap-2">
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
 
-    <!-- Logo -->
-    <a href="/" class="logo d-flex align-items-center flex-shrink-0 me-2">
-      <img src="{% static '/images/logo.png' %}" alt="" style="height:34px;">
-      <h1 class="sitename ms-2 mb-0 d-none d-sm-block">BuyZone</h1>
-    </a>
+    main {
+      flex: 1;
+    }
 
-    <!-- Search -->
-    <form  id="desktopSearchForm" method="GET"
-      class="d-none d-md-flex flex-grow-1 position-relative">
+    /* --- Dropdown Fix: Overflow & Absolute Positioning --- */
+    header {
+      position: relative;
+      z-index: 1070;
+    }
 
-      <input type="text" name="q" id="searchInput"
-        class="form-control form-control-sm rounded-pill ps-3 pe-5"
-        placeholder="Search products..." autocomplete="off">
+    .sub-nav {
+      position: relative;
+      overflow: visible !important;
+    }
 
-      <button class="btn position-absolute top-50 end-0 translate-middle-y me-2 border-0">
-        <i class="bi bi-search"></i>
-      </button>
+    .sub-nav .dropdown {
+      position: relative;
+    }
 
-      <div id="liveSearchResults" class="search-suggestions-container d-none"></div>
-    </form>
+    .sub-nav .dropdown-menu {
+      display: none;
+      position: absolute !important;
+      top: 100% !important;
+      left: 0 !important;
+      z-index: 99999 !important;
+      margin-top: 8px;
+      background-color: #ffffff;
+      border: 1px solid var(--pill-border);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      min-width: 200px;
+    }
 
-    <!-- Right controls -->
-    <div class="d-flex align-items-center flex-shrink-0 ms-auto gap-2">
+    .sub-nav .dropdown:hover .dropdown-menu,
+    .dropdown:hover .dropdown-menu {
+      display: block !important;
+    }
 
-      <!-- Cart -->
-      <button type="button"
-        class="btn btn-danger btn-sm rounded-pill px-3 d-flex align-items-center gap-1"
-        id="popcart">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <span class="fw-semibold">(<span id="cart">0</span>)</span>
-      </button>
+    /* Top Navbar */
+    .top-nav {
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-      <!-- Mobile toggle -->
-      <i class="mobile-nav-toggle d-xl-none bi bi-list fs-3"></i>
+    .brand-logo {
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: -1px;
+      color: var(--text-main);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-actions a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--pill-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background-color: var(--pill-bg);
+    }
+
+    /* Sub Navigation (Desktop) */
+    .sub-nav {
+      padding: 0 2rem 1.5rem 2rem;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .sub-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-pill {
+      white-space: nowrap;
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      border: 1px solid var(--pill-border);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-pill:hover,
+    .nav-pill.active {
+      background-color: var(--pill-bg);
+      border-color: var(--pill-bg);
+      color: #111;
+    }
+
+    .dropdown-toggle::after {
+      display: none;
+    }
+
+    .dropdown-menu {
+      border-radius: 16px;
+      border: 1px solid var(--pill-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      padding: 8px;
+    }
+
+    .dropdown-item {
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 8px 14px;
+      color: var(--text-main);
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--pill-bg);
+    }
+
+    .nav-pill.disabled-category {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .search-pill {
+      background-color: var(--pill-bg);
+      border: none;
+      padding-right: 0.5rem;
+    }
+
+    .search-pill input {
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 0.9rem;
+      width: 150px;
+    }
+
+    /* Minimalist Editorial Footer */
+    .site-footer {
+      border-top: 1px solid #eeeeee;
+      padding: 4rem 2rem 2rem 2rem;
+      background-color: #fafafa;
+      margin-top: auto;
+    }
+
+    .footer-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -1px;
+      color: #111;
+      text-decoration: none;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .footer-links h6 {
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.2rem;
+      color: #111;
+    }
+
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: #111;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #eee;
+      padding-top: 2rem;
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* --- RESPONSIVE FIX: Hide sub-nav on mobile/tablet --- */
+    @media (max-width: 991px) {
+      .sub-nav {
+        display: none !important;
+      }
+      .top-nav {
+        padding: 1rem;
+      }
+      .brand-logo {
+        font-size: 1.4rem;
+      }
+      .nav-actions {
+        gap: 0.75rem;
+      }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- Main Header -->
+  <header>
+    <div class="top-nav">
+      <div class="d-flex align-items-center gap-3">
+        <!-- Hamburger Bar Icon: Visible on mobile and tablet -->
+        <i class="bi bi-list fs-3 d-lg-none" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu"></i>
+        <a href="/" class="brand-logo">MH CLUB.</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="#" class="nav-links-desktop d-none d-lg-inline">Blogs</a>
+        <a href="#" class="nav-links-desktop d-none d-lg-inline">FAQs</a>
+        <a href="#" class="icon-btn"><i class="bi bi-bell"></i></a>
+        
+        <!-- Cart Icon with Popover Trigger -->
+        <a href="#" class="icon-btn position-relative" id="popcart" data-bs-toggle="popover">
+          <i class="bi bi-cart2"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark" id="cart"
+            style="font-size: 0.6rem;">0</span>
+        </a>
+        
+        <a href="/profile/" class="icon-btn"><i class="bi bi-person"></i></a>
+      </div>
     </div>
 
-    <!-- Navigation -->
-    <nav id="navmenu" class="navmenu">
-      <ul class="mb-0">
-        <li><a href="/" class="nav-link">Home</a></li>
-        <li><a href="/about/" class="nav-link">About</a></li>
-        <li><a href="/profile/" class="nav-link">Profile</a></li>
+    <!-- Sub Navigation Filters (Desktop Only) -->
+    <div class="sub-nav d-none d-lg-flex">
+      <!-- Clothing Dropdown Menu -->
+      <div class="dropdown">
+        <a href="#" class="nav-pill dropdown-toggle d-flex align-items-center gap-2 text-decoration-none" aria-expanded="false">
+          Clothing <i class="bi bi-chevron-down" style="font-size: 0.75rem;"></i>
+        </a>
+        <ul class="dropdown-menu">
+          {% for cat in categories %}
+          <li><a class="dropdown-item" href="{% url 'category_products' cat.name %}">{{ cat.name }}</a></li>
+          {% empty %}
+          <li><span class="dropdown-item text-muted">No categories found</span></li>
+          {% endfor %}
+        </ul>
+      </div>
 
-        {% if request.user.is_authenticated %}
-        <li>
-          <a href="/auth/logout/">Logout <i class="fa-solid fa-right-from-bracket"></i></a>
-        </li>
-        {% else %}
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle">
-            <span>Account</span>
-            <i class="bi bi-chevron-down toggle-dropdown ms-1"></i>
-          </a>
-          <ul>
-            <li><a href="/auth/signup/">Sign Up</a></li>
-            <li><a href="/auth/login/">Login</a></li>
-          </ul>
-        </li>
-        {% endif %}
+      <a href="#" class="nav-pill">New Arrivals</a>
+      <a href="#" class="nav-pill">Sale</a>
 
-        <li><a href="/contact/" class="nav-link">Contact</a></li>
-        <div class="d-md-none px-3 py-2 position-relative">
+      <!-- Search Form with Live Results -->
+      <form class="nav-pill search-pill d-flex align-items-center position-relative" method="GET" action="/search/" id="searchForm">
+        <input type="text" placeholder="Search..." name="q" id="searchInput" autocomplete="off">
+        <button type="submit" class="btn p-0 border-0"><i class="bi bi-search"></i></button>
+        
+        <!-- Live Search Dropdown Box -->
+        <div id="liveSearchResults" class="dropdown-menu shadow-sm border-0 p-2" style="display: none; position: absolute; top: 110%; left: 0; width: 280px; border-radius: 16px; background: #fff; z-index: 9999;">
+          <!-- Results injected dynamically via JS -->
+        </div>
+      </form>
 
-          <form id="mobileSearchForm" action="{% url 'search' %}" method="GET">
-            <input type="text"
-                  id="searchInputMobile"
-                  name="q"
-                  class="form-control form-control-sm rounded-pill ps-3 pe-5"
-                  placeholder="Search products..."
-                  autocomplete="off">
-          </form>
+      <!-- Navigation Pills -->
+      <a href="/" class="nav-pill active">Home</a>
+      <a href="#" class="nav-pill disabled-category">Women</a>
+      <a href="#" class="nav-pill disabled-category">Kids</a>
+      <a href="#" class="nav-pill disabled-category">Accessories</a>
+    </div>
+  </header>
 
-          <div id="liveSearchResultsMobile" style="
-          border-radius: 5px;
-          border: 0.1px solid black;
-          " class="d-none mt-2"></div>
+  <!-- Mobile & Tablet Offcanvas Sidebar Menu (Hamburger Drawer) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel" style="border-radius: 0 24px 24px 0; border: none; width: 300px;">
+    <div class="offcanvas-header border-bottom px-4 py-3">
+      <h5 class="offcanvas-title fw-bold" id="mobileMenuLabel" style="letter-spacing: -1px;">MH CLUB.</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body px-4 py-4">
+      
+      <!-- Mobile Search Input -->
+      <form class="input-group mb-4" method="GET" action="/search/">
+        <input type="text" class="form-control bg-light border-0 py-2" placeholder="Search products..." name="q" style="border-radius: 50px 0 0 50px; font-size: 0.9rem;">
+        <button class="btn btn-dark px-3" type="submit" style="border-radius: 0 50px 50px 0;"><i class="bi bi-search"></i></button>
+      </form>
 
+      <div class="d-flex flex-column gap-3">
+        <a href="/" class="text-decoration-none text-dark fw-bold fs-6">Home</a>
+        
+        <!-- Mobile Categories Accordion or List -->
+        <div class="py-1">
+          <span class="text-uppercase text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">Categories</span>
+          <div class="d-flex flex-column gap-2 mt-2 ps-2">
+            {% for cat in categories %}
+            <a href="{% url 'category_products' cat.name %}" class="text-decoration-none text-dark fw-medium" style="font-size: 0.95rem;">{{ cat.name }}</a>
+            {% empty %}
+            <span class="text-muted" style="font-size: 0.85rem;">No categories available</span>
+            {% endfor %}
+          </div>
         </div>
 
-      </ul>
-    </nav>
-
-  </div>
-</header>
-
-
-  {% block hero %}
-  <!-- Hero Section -->
- <section id="hero" class="hero section dark-background position-relative overflow-hidden">
-
-  <!-- Carousel -->
-  <div id="heroCarousel"
-       class="carousel slide carousel-fade position-absolute top-0 start-0 w-100 h-100"
-       data-bs-ride="carousel"
-       data-bs-interval="3500">
-
-    <div class="carousel-inner h-100">
-
-      <div class="carousel-item active h-100">
-        <img src="{% static 'images/bgg.jpg' %}"
-             class="w-100 h-100 object-fit-cover"
-             alt="Hero image 1">
-      </div>
-
-      <div class="carousel-item h-100">
-        <img src="{% static 'images/bgg1.jpg' %}"
-             class="w-100 h-100 object-fit-cover"
-             alt="Hero image 2">
-      </div>
-
-      <div class="carousel-item h-100">
-        <img src="{% static 'images/bgg2.jpg' %}"
-             class="w-100 h-100 object-fit-cover"
-             alt="Hero image 3">
-      </div>
-
-      <div class="carousel-item h-100">
-        <img src="{% static 'images/bgg3.jpg' %}"
-             class="w-100 h-100 object-fit-cover"
-             alt="Hero image 4">
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Overlay -->
-  <div class="position-absolute top-0 start-0 w-100 h-100"
-       style="background: rgba(0,0,0,0.45); z-index: 1;"></div>
-
-  <!-- Content -->
-  <div class="container h-100 position-relative z-2 d-flex align-items-center justify-content-center text-center"
-       data-aos="fade-up"
-       data-aos-delay="100">
-
-    <div class="row justify-content-center w-100">
-      <div class="col-11 col-sm-9 col-md-8 col-lg-5">
-
-        {% block content %}
-        {% endblock content %}
-
+        <a href="#" class="text-decoration-none text-dark fw-bold fs-6">New Arrivals</a>
+        <a href="#" class="text-decoration-none text-dark fw-bold fs-6">Sale</a>
+        
+        <hr class="text-muted my-2">
+        
+        <a href="/profile/" class="text-decoration-none text-muted fw-medium">Track Order & Profile</a>
+        <a href="#" class="text-decoration-none text-muted fw-medium">Blogs</a>
+        <a href="#" class="text-decoration-none text-muted fw-medium">FAQs & Support</a>
+        <a href="/contact/" class="text-decoration-none text-muted fw-medium">Contact Us</a>
+        <a href="/about/" class="text-decoration-none text-muted fw-medium">About Us</a>
       </div>
     </div>
-
   </div>
 
-</section>
-
-
-  {% endblock hero %}
-
-
-
-  <main class="main">
+  <main data-aos="fade" data-aos-duration="600">
+    {% block content %}
+    {% endblock %}
 
     {% block body %}
-
-    {% endblock body %}
-
+    {% endblock %}
   </main>
-  <hr>
- <footer id="footer" class="footer bg-light pt-5 mt-0">
 
-  <div class="container">
-    <div class="row gy-4 text-center text-lg-start">
+<!-- Editorial Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-12 col-md-4">
+          <a href="/" class="footer-brand">MH CLUB.</a>
+          <p class="text-muted" style="font-size: 0.9rem; max-width: 300px; line-height: 1.6;">
+            Timeless lifestyle products and contemporary fashion designed to match your personal taste and daily vibe.
+          </p>
+        </div>
 
-      <!-- Brand / About -->
-      <div class="col-lg-4 col-md-12">
-        <a href="/" class="d-inline-flex align-items-center mb-2">
-          <span class="fs-4 fw-bold text-dark">BuyZone</span>
-        </a>
-        <p class="small text-muted mt-2">
-          Shop smarter with BuyZone — your one-stop online store for unbeatable deals,
-          fast delivery, and secure shopping.
-        </p>
+        <div class="col-6 col-md-4 footer-links">
+          <h6>Categories</h6>
+          <ul>
+            {% for cat in categories %}
+            <li><a href="{% url 'category_products' cat.name %}">{{ cat.name }}</a></li>
+            {% empty %}
+            <li><span class="text-muted" style="font-size: 0.85rem;">No categories</span></li>
+            {% endfor %}
+          </ul>
+        </div>
 
-        <div class="d-flex justify-content-center justify-content-lg-start gap-3 mt-3">
-          <a href="https://www.facebook.com/profile.php?id=100027616853550" target="_blank"
-            class="text-dark fs-5"><i class="bi bi-facebook"></i></a>
-          <a href="https://instagram.com/tauseef.khan_24" target="_blank"
-            class="text-dark fs-5"><i class="bi bi-instagram"></i></a>
-          <a href="https://www.linkedin.com/in/tauseefthedeveloper" target="_blank"
-            class="text-dark fs-5"><i class="bi bi-linkedin"></i></a>
+        <!-- Updated Store Location & Contact Column -->
+        <div class="col-12 col-md-4 footer-links">
+          <h6>Store Location & Contact</h6>
+          <p class="text-muted" style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.8rem;">
+            <strong>M.H. Club (Men's & Kid's Wear)</strong><br>
+            Shop No. 10, Gaya Building 107,<br>
+            Y.M. Road, Masjid Bunder (W),<br>
+            Mumbai - 400003
+          </p>
+          <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5; margin-bottom: 0;">
+            <strong>Contacts:</strong><br>
+            Ahsan Ahmad: <a href="tel:7977211641" class="text-muted text-decoration-none">7977211641</a><br>
+            Furkan Ah mad: <a href="tel:9987307368" class="text-muted text-decoration-none">9987307368</a>
+          </p>
         </div>
       </div>
 
-      <!-- Useful Links -->
-      <div class="col-lg-2 col-6">
-        <h6 class="fw-bold mb-3">Useful Links</h6>
-        <ul class="list-unstyled small">
-          <li class="mb-2"><a class="text-muted text-decoration-none" href="/">Home</a></li>
-          <li class="mb-2"><a class="text-muted text-decoration-none" href="/about/">About Us</a></li>
-          <li class="mb-2"><a class="text-muted text-decoration-none" href="/contact/">Contact</a></li>
-
-          {% if request.user.is_authenticated %}
-          <li class="mb-2"><a class="text-muted text-decoration-none" href="/checkout/">Checkout</a></li>
-          <li class="mb-2"><a class="text-muted text-decoration-none" href="/profile/">My Profile</a></li>
-          {% else %}
-          <li class="mb-2"><a class="text-muted text-decoration-none" href="/auth/login/">Login</a></li>
-          <li class="mb-2"><a class="text-muted text-decoration-none" href="/auth/signup/">Sign Up</a></li>
-          {% endif %}
-        </ul>
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <p class="mb-2 mb-md-0">© 2026 MH Club. All rights reserved.</p>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-muted text-decoration-none" style="font-size: 0.85rem;">Privacy Policy</a>
+          <a href="#" class="text-muted text-decoration-none" style="font-size: 0.85rem;">Terms of Service</a>
+        </div>
       </div>
-
-      <!-- Services -->
-      <div class="col-lg-3 col-6">
-        <h6 class="fw-bold mb-3">Our Services</h6>
-        <ul class="list-unstyled small text-muted">
-          <li class="mb-2"><i class="bi bi-truck me-2"></i>Fast Delivery</li>
-          <li class="mb-2"><i class="bi bi-shield-check me-2"></i>Secure Payments</li>
-          <li class="mb-2"><i class="bi bi-headset me-2"></i>24/7 Support</li>
-          <li class="mb-2"><i class="bi bi-arrow-repeat me-2"></i>Easy Returns</li>
-          <li class="mb-2"><i class="bi bi-tags me-2"></i>Exclusive Deals</li>
-        </ul>
-      </div>
-
-      <!-- Contact -->
-      <div class="col-lg-3 col-md-12">
-        <h6 class="fw-bold mb-3">Contact Us</h6>
-        <p class="small text-muted mb-1">90 Feet Road, Lokmanya Tilak Nagar</p>
-        <p class="small text-muted mb-1">Sakinaka, Mumbai 400072</p>
-        <p class="small text-muted mb-1">India</p>
-        <p class="small mt-2"><strong>Phone:</strong> +91 9721523530</p>
-        <p class="small"><strong>Email:</strong> buyzone@gmail.com</p>
-      </div>
-
     </div>
-  </div>
+  </footer>
 
-  <!-- Copyright -->
-  <div class="border-top mt-4 py-3">
-    <div class="container text-center small text-muted">
-      © 2026 <strong>BuyZone</strong>. All Rights Reserved <br>
-      Designed by
-      <a href="https://github.com/tauseefthedeveloper" target="_blank"
-        class="text-decoration-none fw-bold text-dark">
-        Tauseef Khan & Arham Khan
-      </a>
-    </div>
-  </div>
-
-</footer>
-
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
-      class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
-  <div id="preloader"></div>
-
-  <!-- Vendor JS Files -->
-  <script src="{% static '/assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static '/assets/vendor/php-email-form/validate.js' %}"></script>
-  <script src="{% static '/assets/vendor/aos/aos.js' %}"></script>
-  <script src="{% static '/assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
-  <script src="{% static '/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
-  <script src="{% static '/assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
-  <script src="{% static '/assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
-
-  <!-- Main JS File -->
-  <script src="{% static '/assets/js/main.js' %}"></script>
-  <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
-  <script src="https://unpkg.com/xzoom/dist/xzoom.min.js"></script>
-  <script src="{%static '/assets/js/script.js' %}"></script>
-  <script src="{% static '/assets/js/zoom.js' %}"></script>
+  <!-- jQuery Required for Live Search & AJAX -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- AOS Animation Library JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  
   <script>
+    // Initialize AOS Animation Engine
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 50
+    });
 
+    $(document).ready(function () {
+      /* ==========================================
+         1. LIVE SEARCH FUNCTIONALITY
+      ========================================== */
+      const $input = $('#searchInput');
+      const $resultsBox = $('#liveSearchResults');
 
-    // Highlight active navigation link
-    document.addEventListener('DOMContentLoaded', () => {
-      const searchInput = document.getElementById('searchInput');
-      const resultsContainer = document.getElementById('liveSearchResults');
-      const desktopForm = document.getElementById("desktopSearchForm");
-
-      desktopForm.addEventListener('submit', function (e) {
-        e.preventDefault();              // ⛔ stop redirect
-        searchInput.dispatchEvent(new Event('input')); // 🔁 reuse same logic
-      });
-
-      searchInput.addEventListener('input', function () {
-        const query = this.value.trim();
+      $input.on('keyup', function () {
+        const query = $(this).val().trim();
 
         if (query.length > 1) {
-          fetch(`/search/?q=${encodeURIComponent(query)}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-          })
-            .then(response => response.json())
-            .then(data => {
-
-              let html = "";
-
-              if (data.results.length > 0) {
-                html += `<ul class="list-group">`;
-
-                data.results.forEach(item => {
+          $.ajax({
+            url: '/api/live-search/',
+            data: { q: query },
+            dataType: 'json',
+            success: function (data) {
+              let html = '';
+              if (data.products && data.products.length > 0) {
+                data.products.forEach(p => {
                   html += `
-              <li class="list-group-item">
-                <a href="/productDetails/${item.id}/" style="font-size: 12px;" class="text-decoration-none anchor-link">
-                  ${item.product_name}
-                </a>
-              </li>
-            `;
+                    <a href="${p.url}" class="dropdown-item d-flex align-items-center gap-2 py-2" style="border-radius: 8px;">
+                      <img src="${p.image}" alt="${p.name}" style="width: 35px; height: 35px; object-fit: cover; border-radius: 6px;">
+                      <div class="text-truncate">
+                        <div class="fw-bold text-dark" style="font-size: 0.85rem;">${p.name}</div>
+                        <div style="font-size: 0.75rem; color: #767676;">₹${p.price}</div>
+                      </div>
+                    </a>
+                  `;
                 });
-
-                html += `</ul>`;
+                $resultsBox.html(html).show();
               } else {
-                html = `<div class="p-2 text-muted">No results found</div>`;
+                $resultsBox.html('<div class="p-2 text-muted text-center" style="font-size: 0.85rem;">No products found</div>').show();
               }
-
-              resultsContainer.innerHTML = html;
-              resultsContainer.classList.remove('d-none');
-              resultsContainer.style.display = 'block';
-              resultsContainer.classList.add('search-animate-in');
-            });
+            }
+          });
         } else {
-          resultsContainer.style.display = 'none';
+          $resultsBox.hide();
         }
       });
 
-      // Hide when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
-          resultsContainer.style.display = 'none';
+      // Hide live search dropdown when clicking outside
+      $(document).on('click', function (e) {
+        if (!$(e.target).closest('#searchForm').length) {
+          $resultsBox.hide();
         }
       });
-    });
 
+      /* ==========================================
+         2. GLOBAL CART BADGE & POPOVER SETUP
+      ========================================== */
+      const cartCount = document.getElementById("cart");
+      const popcart = document.getElementById("popcart");
 
-    const currentPage = window.location.pathname;
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-    });
-    navLinks.forEach(link => {
-      if (link.getAttribute('href') === currentPage) {
-        link.classList.add('active');
+      function getCartData() {
+        return localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : {};
       }
+
+      let popover = null;
+      if (popcart) {
+        popover = new bootstrap.Popover(popcart, {
+          html: true,
+          trigger: "click",
+          sanitize: false,
+          placement: "bottom",
+          content: function () {
+            return getPopoverHTML();
+          }
+        });
+
+        popcart.addEventListener("shown.bs.popover", function () {
+          updateGlobalCartCount();
+          const tip = popover.getTipElement();
+          if (tip) {
+            const body = tip.querySelector('.popover-body');
+            if (body) {
+              body.innerHTML = getPopoverHTML();
+            }
+          }
+        });
+
+        document.addEventListener("click", function (e) {
+          if (!popcart.contains(e.target) && !e.target.closest(".popover")) {
+            popover.hide();
+          }
+        });
+      }
+
+      function updateGlobalCartCount() {
+        let cart = getCartData();
+        let totalQty = 0;
+        for (let item in cart) {
+          if (cart[item] && cart[item][0]) {
+            totalQty += parseInt(cart[item][0]);
+          }
+        }
+        if (cartCount) {
+          cartCount.innerText = totalQty;
+        }
+      }
+
+      function getPopoverHTML() {
+        let cart = getCartData();
+        let html = `<h6 class="mb-3 fw-bold" style="color: #111;">Your Bag</h6><div class="mb-3">`;
+        let i = 1;
+        let hasItems = false;
+
+        for (let item in cart) {
+          if (cart[item] && cart[item][0] > 0) {
+            hasItems = true;
+            html += `<div style="font-size: 0.85rem; color: #767676; margin-bottom: 8px;">
+              <span class="fw-bold text-dark">${i}.</span> ${cart[item][1].slice(0, 20)} 
+              <span class="float-end fw-bold text-dark">x${cart[item][0]}</span>
+            </div>`;
+            i++;
+          }
+        }
+
+        if (!hasItems) {
+          return "Your bag is empty";
+        }
+
+        html += `
+          </div>
+          <div class="d-flex gap-2 mt-3 pt-3 border-top">
+            <a href="/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}" class="btn w-100 fw-bold" style="background-color: #111; color: #fff; border-radius: 50px; font-size: 0.8rem; padding: 8px 0;">Checkout</a>
+            <button type="button" class="btn fw-bold clear-btn" style="background-color: #f5f5f5; color: #111; border-radius: 50px; font-size: 0.8rem; padding: 8px 15px;">Clear</button>
+          </div>
+        `;
+
+        return html;
+      }
+
+      // Delegated event listener for the Clear button inside popover
+      $(document).on('click', '.clear-btn', function () {
+        localStorage.removeItem("cart");
+        updateGlobalCartCount();
+        if (popover) {
+          popover.hide();
+        }
+        location.reload();
+      });
+
+      updateGlobalCartCount();
     });
   </script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-  const searchInputMobile = document.getElementById('searchInputMobile');
-  const resultsContainerMobile = document.getElementById('liveSearchResultsMobile');
-  const mobileForm = document.getElementById('mobileSearchForm');
-
-  if (!searchInputMobile || !resultsContainerMobile || !mobileForm) return;
-
-  /* 🚫 STOP FORM SUBMIT (THIS IS THE KEY FIX) */
-  mobileForm.addEventListener('submit', function (e) {
-    e.preventDefault();              // ⛔ stop redirect
-    searchInputMobile.dispatchEvent(new Event('input')); // 🔁 reuse same logic
-  });
-
-  /* 🔁 EXACT SAME LOGIC AS DESKTOP */
-  searchInputMobile.addEventListener('input', function () {
-    const query = this.value.trim();
-    searchInputMobile.style.display = "block";
-
-    if (query.length > 1) {
-      fetch(`/search/?q=${encodeURIComponent(query)}`, {
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-      })
-      .then(response => response.json())
-      .then(data => {
-
-        let html = "";
-
-        if (data.results.length > 0) {
-          html += `<div class="list-unstyled">`;
-
-          data.results.forEach(item => {
-            html += `
-              <div class="list-group-item px-0">
-                <a href="/productDetails/${item.id}/"
-                   style="font-size:14px"
-                   class="text-decoration-none">
-                  ${item.product_name}
-                </a>
-              </div>
-            `;
-          });
-
-          html += `</div>`;
-        } else {
-          html = `<div class="text-muted small" style="
-          padding: 10px 20px;">No results found</div>`;
-        }
-
-        resultsContainerMobile.innerHTML = html;
-        resultsContainerMobile.classList.remove('d-none');
-        resultsContainerMobile.style.display = 'block';
-      });
-    } else {
-      resultsContainerMobile.style.display = 'none';
-    }
-  });
-
-  /* Hide on outside click */
-  document.addEventListener('click', (e) => {
-    if (
-      !searchInputMobile.contains(e.target) &&
-      !resultsContainerMobile.contains(e.target)
-    ) {
-      resultsContainerMobile.style.display = 'none';
-    }
-  });
-
-});
-</script>
-
-
+  {% block scripts %}{% endblock %}
 </body>
 
 </html>
