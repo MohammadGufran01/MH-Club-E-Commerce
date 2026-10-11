@@ -16,9 +16,10 @@ urlpatterns = [
 
 from django.views.static import serve
 
-# ✅ MEDIA FILES (ALWAYS SERVED BEFORE CATCH-ALL)
+# ✅ MEDIA & STATIC FILES (ALWAYS SERVED BEFORE CATCH-ALL)
 urlpatterns += [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
 
 # Catch-all route for any unmatched URLs to always render the luxury 404 page
