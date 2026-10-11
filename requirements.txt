@@ -11,3 +11,4 @@ python-dotenv==1.0.1
 six>=1.16.0
 reportlab==4.4.7
 sendgrid==6.12.5
+django-unfold==0.104.1

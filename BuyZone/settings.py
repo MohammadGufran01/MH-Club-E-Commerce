@@ -19,9 +19,11 @@ print("----------------------")
 # ======================
 # BASIC SETTINGS
 # ======================
-SECRET_KEY = 'django-insecure-r$rt2)kr3j2(ecpu%^+x_(&2@jfv*a0=lsy(iu3^(jwq$zc&wt'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-key")
+DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
+ALLOWED_HOSTS = ["*"]
+
 
 # ======================
 # APPLICATIONS (Jazzmin removed, Unfold placed before admin)
