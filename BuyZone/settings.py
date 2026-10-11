@@ -26,6 +26,8 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     "https://*.vercel.app",
     "https://*.now.sh",
+    "https://mh-club-e-commerce-rust.vercel.app",
+    "https://mh-club-e-commerce-gufran5.vercel.app",
     "http://127.0.0.1:8000",
     "http://localhost:8000",
 ]
@@ -95,12 +97,37 @@ TEMPLATES = [
 # ======================
 # DATABASE
 # ======================
+import shutil
+
+IS_VERCEL = "VERCEL" in os.environ
+
+if IS_VERCEL:
+    TMP_DB = Path("/tmp/db.sqlite3")
+    ORIG_DB = BASE_DIR / "db.sqlite3"
+    if (not TMP_DB.exists() or TMP_DB.stat().st_size == 0) and ORIG_DB.exists():
+        try:
+            shutil.copy2(ORIG_DB, TMP_DB)
+        except Exception:
+            pass
+    DB_NAME = TMP_DB if TMP_DB.exists() else ORIG_DB
+else:
+    DB_NAME = BASE_DIR / "db.sqlite3"
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": DB_NAME,
     }
 }
+
+# ======================
+# SESSIONS & SECURITY
+# ======================
+if IS_VERCEL:
+    SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 
 # ======================
 # PASSWORD VALIDATION
