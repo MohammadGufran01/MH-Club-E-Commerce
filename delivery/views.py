@@ -43,14 +43,14 @@ def generate_delivery_otp(request, order_id):
     )
 
 
-    subject = "Your BuyZone Delivery OTP"
+    subject = "Your MH Club Delivery OTP"
 
     html_message = f"""
         <!DOCTYPE html>
         <html>
         <head>
         <meta charset="UTF-8">
-        <title>BuyZone Delivery OTP</title>
+        <title>MH Club Delivery OTP</title>
         </head>
 
         <body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;">
@@ -65,8 +65,8 @@ def generate_delivery_otp(request, order_id):
 
         <!-- Header -->
         <tr>
-        <td style="background-color:#0d6efd; padding:25px; text-align:center;">
-        <h1 style="color:#ffffff; margin:0; font-size:26px;">BuyZone</h1>
+        <td style="background-color:#111111; padding:25px; text-align:center;">
+        <h1 style="color:#ffffff; margin:0; font-size:26px; letter-spacing:1px;">MH Club</h1>
         <p style="color:#e9ecef; margin:5px 0 0; font-size:14px;">
             Secure Delivery Verification
         </p>
@@ -88,7 +88,7 @@ def generate_delivery_otp(request, order_id):
         <div style="text-align:center; margin:30px 0;">
             <div style="
             display:inline-block;
-            background:#0d6efd;
+            background:#111111;
             color:#ffffff;
             padding:14px 30px;
             font-size:26px;
@@ -104,7 +104,7 @@ def generate_delivery_otp(request, order_id):
             </p>
         </div> <br>
         <p style="font-size:14px; line-height:1;">
-            Total amount to be pay: <strong>₹ {order.amount}</strong>
+            Total amount to be paid: <strong>₹ {order.amount}</strong>
         </p>
         <p style="font-size:14px; line-height:1;">
             Delivery for Order ID: <strong>{order.oid}</strong>
@@ -116,7 +116,7 @@ def generate_delivery_otp(request, order_id):
 
         <p style="margin-top:30px; font-size:14px;">
             Regards,<br>
-            <strong>BuyZone Team</strong>
+            <strong>MH Club Team</strong>
         </p>
 
         </td>
@@ -125,7 +125,7 @@ def generate_delivery_otp(request, order_id):
         <!-- Footer -->
         <tr>
         <td style="background-color:#f8f9fa; padding:15px; text-align:center; font-size:12px; color:#6c757d;">
-        © 2026 BuyZone. All rights reserved.
+        © 2026 MH Club. All rights reserved.
         </td>
         </tr>
 
@@ -140,7 +140,7 @@ def generate_delivery_otp(request, order_id):
         """
 
         # Plain-text fallback (required for some clients)
-    text_message = f"Your BuyZone Delivery OTP is {otp}. Do not share it with anyone."
+    text_message = f"Your MH Club Delivery OTP is {otp}. Do not share it with anyone."
 
     email = EmailMultiAlternatives(
             subject=subject,
@@ -176,14 +176,14 @@ def verify_delivery_otp(request, order_id):
             delivery_otp.save()
 
             otp = delivery_otp.otp
-            subject = "Confirmation: Your BuyZone Order is Delivered"
+            subject = "Confirmation: Your MH Club Order is Delivered"
 
             html_message = f"""
                 <!DOCTYPE html>
                 <html>
                 <head>
                 <meta charset="UTF-8">
-                <title>BuyZone — Order Delivered</title>
+                <title>MH Club — Order Delivered</title>
                 </head>
 
                 <body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;">
@@ -198,8 +198,8 @@ def verify_delivery_otp(request, order_id):
 
                 <!-- Header -->
                 <tr>
-                <td style="background-color:#0d6efd; padding:25px; text-align:center;">
-                <h1 style="color:#ffffff; margin:0; font-size:26px;">BuyZone</h1>
+                <td style="background-color:#111111; padding:25px; text-align:center;">
+                <h1 style="color:#ffffff; margin:0; font-size:26px; letter-spacing:1px;">MH Club</h1>
                 <p style="color:#e9ecef; margin:5px 0 0; font-size:14px;">
                     Order Delivery Confirmation
                 </p>
@@ -217,7 +217,7 @@ def verify_delivery_otp(request, order_id):
                 </p>
 
                 <p style="font-size:15px; line-height:1.6;">
-                    Thank you for shopping with <strong>BuyZone</strong>. We hope you enjoy your purchase!
+                    Thank you for shopping with <strong>MH Club</strong>. We hope you enjoy your purchase!
                 </p>
 
                 <!-- Order Info box -->
@@ -242,7 +242,7 @@ def verify_delivery_otp(request, order_id):
 
                 <p style="margin-top:30px; font-size:14px;">
                     Warm Regards,<br>
-                    <strong>BuyZone Team</strong>
+                    <strong>MH Club Team</strong>
                 </p>
 
                 </td>
@@ -251,7 +251,7 @@ def verify_delivery_otp(request, order_id):
                 <!-- Footer -->
                 <tr>
                 <td style="background-color:#f8f9fa; padding:15px; text-align:center; font-size:12px; color:#6c757d;">
-                © 2026 BuyZone. All rights reserved.
+                © 2026 MH Club. All rights reserved.
                 </td>
                 </tr>
 
@@ -266,7 +266,7 @@ def verify_delivery_otp(request, order_id):
             """
 
 
-            text_message = f"Order Delivered: Your BuyZone order with ID {order.oid} has been delivered successfully."
+            text_message = f"Order Delivered: Your MH Club order with ID {order.oid} has been delivered successfully."
 
             email = EmailMultiAlternatives(
                 subject=subject,
@@ -278,13 +278,13 @@ def verify_delivery_otp(request, order_id):
             order.paymentstatus = "Paid"
             order.amountpaid = order.amountpaid or order.amount
             order.delivered_at = timezone.now()
-            order.save(update_fields=["paymentstatus","amountpaid"])
+            order.save(update_fields=["paymentstatus","amountpaid","delivered_at"])
 
             email.attach_alternative(html_message, "text/html")
 
             pdf_buffer = build_modern_invoice(order)
             email.attach(
-                filename=f"BuyZone_Invoice_{order.oid}.pdf",
+                filename=f"MH_Club_Invoice_{order.oid}.pdf",
                 content=pdf_buffer.getvalue(),
                 mimetype="application/pdf"
             )
@@ -417,18 +417,56 @@ def orderDetails(request, order_id):
 
     updates = OrderUpdate.objects.filter(order=order).order_by('-update_date')
 
-    items = json.loads(order.items_json)
-    productIds = [int(str(pid).replace("pr","")) for pid in items.keys()]
-    products = Product.objects.filter(id__in=productIds)
+    items_raw = json.loads(order.items_json or "{}") if isinstance(order.items_json, str) else (order.items_json or {})
+    product_ids = []
+    for pid in items_raw.keys():
+        try:
+            clean_id = int(str(pid).replace("pr", ""))
+            product_ids.append(clean_id)
+        except (ValueError, TypeError):
+            continue
 
-    images = {p.id: p.image.url for p in products if p.image}
+    products = {p.id: p for p in Product.objects.filter(id__in=product_ids).prefetch_related('additional_images')}
 
+    items_list = []
+    for pid, v in items_raw.items():
+        try:
+            clean_id = int(str(pid).replace("pr", ""))
+            p = products.get(clean_id)
+            img_url = p.main_image if p else ""
+            if isinstance(v, list):
+                qty = v[0] if len(v) > 0 else 1
+                name = v[1] if len(v) > 1 else (p.product_name if p else "Product")
+                price = v[2] if len(v) > 2 else (p.price if p else 0)
+                mrp = v[3] if len(v) > 3 else (p.OldPrice if p else 0)
+                discount = v[4] if len(v) > 4 else (p.Discount if p else 0)
+                size = v[5] if len(v) > 5 else ""
+            else:
+                qty = v.get("qty", 1)
+                name = v.get("name", p.product_name if p else "Product")
+                price = v.get("price", p.price if p else 0)
+                mrp = v.get("mrp", p.OldPrice if p else 0)
+                discount = v.get("discount", p.Discount if p else 0)
+                size = v.get("size", "")
+
+            items_list.append({
+                "pid": pid,
+                "name": name,
+                "qty": qty,
+                "price": price,
+                "mrp": mrp,
+                "discount": discount,
+                "size": size,
+                "image": img_url,
+            })
+        except Exception:
+            continue
 
     context = {
         "order": order,
         "updates": updates,
-        "items": items,
-        "images":images,
+        "items": items_raw,
+        "items_list": items_list,
     }
 
     return render(request, "delivery/orderDetails.html", context)
@@ -469,7 +507,7 @@ def mark_return_picked(request, order_id):
                 f"We’ve picked up your return for Order ID {order.oid}.\n\n"
                 "Our team will verify the item and process your refund shortly.\n"
                 "Refunds are usually completed within 5–7 business days.\n\n"
-                "— BuyZone Team"
+                "— MH Club Team"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[order.email],
@@ -492,8 +530,8 @@ def mark_return_picked(request, order_id):
             message=(
                 f"Hi {order.name},\n\n"
                 f"We’ve successfully picked up your return for Order ID {order.oid}.\n\n"
-                "Since this was a Cash on Delivery order, the refund process is done our team within 5–7 business days.\n\n"
-                "— BuyZone Team"
+                "Since this was a Cash on Delivery order, the refund process is handled by our team within 5–7 business days.\n\n"
+                "— MH Club Team"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[order.email],

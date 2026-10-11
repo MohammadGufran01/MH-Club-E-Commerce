@@ -42,10 +42,19 @@ class Product(models.Model):
     subcategory = models.CharField(max_length=50, default="")
     price = models.IntegerField(default=0)
     OldPrice = models.IntegerField(default=0)
-    Discount = models.IntegerField(default=0)
+    Discount = models.IntegerField(default=0, blank=True)
     desc = models.CharField(max_length=300)
     ShippingFee = models.IntegerField(default=0)
     Rating = models.IntegerField(default=0, validators=[MaxValueValidator(5)])
+
+    def save(self, *args, **kwargs):
+        # Automatically calculate discount percentage based on price and OldPrice
+        if self.OldPrice and self.OldPrice > self.price:
+            discount_val = ((self.OldPrice - self.price) / self.OldPrice) * 100
+            self.Discount = round(discount_val)
+        else:
+            self.Discount = 0
+        super().save(*args, **kwargs)
 
     @property
     def main_image(self):
@@ -60,7 +69,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
-
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='additional_images')

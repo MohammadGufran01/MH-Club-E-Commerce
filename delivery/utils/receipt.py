@@ -72,7 +72,7 @@ def build_modern_invoice(order):
         canvas.drawString(
             X_START + LOGO_WIDTH + 12,   # <-- 12px spacing
             Y_BASE - 8,                  # <-- aligns baseline visually
-            "BuyZone"
+            "MH Club"
         )
 
         # Subtitle text
@@ -81,7 +81,7 @@ def build_modern_invoice(order):
         canvas.drawString(
             X_START + LOGO_WIDTH + 12,
             Y_BASE - 28,
-            "Modern Retail Invoice"
+            "Premium Fashion & Lifestyle"
         )
 
         canvas.restoreState()
@@ -195,7 +195,7 @@ def build_modern_invoice(order):
 
     story.append(HRFlowable(width="100%", thickness=1, color=colors.lightgrey))
     story.append(Spacer(1, 10))
-    story.append(Paragraph("Thank you for shopping with BuyZone", center))
+    story.append(Paragraph("Thank you for shopping with MH Club", center))
     story.append(Paragraph("This invoice was generated electronically.", center))
 
     doc.build(story, onFirstPage=header, onLaterPages=header)

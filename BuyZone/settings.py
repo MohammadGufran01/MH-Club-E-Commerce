@@ -1,15 +1,20 @@
 from pathlib import Path
 from django.contrib import messages
-
 from dotenv import load_dotenv
 import os
 
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR / ".env", override=True)
 
 APPEND_SLASH = True
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
+
+# --- DEBUG PRINT TO CHECK TERMINAL ---
+print("--- RAZORPAY DEBUG ---")
+print("KEY_ID Loaded:", RAZORPAY_KEY_ID)
+print("KEY_SECRET Loaded:", "********" if RAZORPAY_KEY_SECRET else "None/Empty")
+print("----------------------")
 
 # ======================
 # BASIC SETTINGS
@@ -19,10 +24,12 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # ======================
-# APPLICATIONS
+# APPLICATIONS (Jazzmin removed, Unfold placed before admin)
 # ======================
 INSTALLED_APPS = [
-    'jazzmin',
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,11 +57,13 @@ MIDDLEWARE = [
 
     'delivery.middleware.DeliveryBoyRedirectMiddleware',
     'authcart.middleware.AuthUserRedirectMiddleware',
+    'buyzoneapp.middleware.GlobalExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'BuyZone.urls'
 WSGI_APPLICATION = 'BuyZone.wsgi.application'
 ASGI_APPLICATION = 'BuyZone.asgi.application'
+
 # ======================
 # TEMPLATES
 # ======================
@@ -96,6 +105,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # ======================
+# AUTHENTICATION BACKENDS
+# ======================
+AUTHENTICATION_BACKENDS = [
+    'authcart.backends.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# ======================
 # INTERNATIONALIZATION
 # ======================
 LANGUAGE_CODE = 'en-us'
@@ -107,16 +124,12 @@ USE_TZ = True
 # EMAIL
 # ======================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = os.getenv("Email")
 EMAIL_HOST_PASSWORD = os.getenv("App_Password")
-print(EMAIL_HOST_USER)
-print(EMAIL_HOST_PASSWORD)
-
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # ======================
@@ -141,75 +154,183 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ======================
 # PAYMENTS
 # ======================
-RAZORPAY_KEY_ID = 'rzp_test_RxQBw94fljOG8Y'
-RAZORPAY_KEY_SECRET = 'qL14RIxEXO5zC7yAtWo5hqXI'
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_RxQBw94fljOG8Y")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "qL14RIxEXO5zC7yAtWo5hqXI")
 
 LOGIN_URL = '/auth/login/'
 
 # ======================
-# JAZZMIN – AMAZON STYLE ADMIN UI
+# DJANGO UNFOLD – STATISTICAL & ANIMATED DASHBOARD CONFIGURATION
 # ======================
-JAZZMIN_SETTINGS = {
+from django.templatetags.static import static
+from django.urls import reverse_lazy
 
-    # Branding
-    "site_title": "BuyZone Admin",
-    "site_header": "BuyZone",
-    "site_brand": "BuyZone",
-    "site_logo": "images/logo.png",
-    "login_logo": "images/logo.png",
-    "site_icon": "images/logo.png",
-
-    "welcome_sign": "Welcome to BuyZone Admin Panel",
-    "copyright": "BuyZone",
-
-    # AMAZON LOOK
-    "theme": "flatly",
-    "dark_mode_theme": "darkly",
-
-    "navbar": "navbar-dark bg-dark",
-    "sidebar": "sidebar-dark-primary",
-    "brand_colour": "navbar-dark",
-
-    # Yellow accent like Amazon
-    "accent": "accent-warning",
-
-    "button_classes": {
-        "primary": "btn-warning",
-        "secondary": "btn-secondary",
-        "success": "btn-success",
-        "danger": "btn-danger",
-        "info": "btn-info",
-        "warning": "btn-warning",
+UNFOLD = {
+    "SITE_TITLE": "MH Club Admin Control Center",
+    "SITE_HEADER": "MH Club Admin Suite",
+    "SITE_URL": "/",
+    "DASHBOARD_CALLBACK": "buyzoneapp.dashboard.dashboard_callback",
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": "Analytics & Control",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Command Dashboard",
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                ],
+            },
+            {
+                "title": "Catalog & Products",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Products Catalog",
+                        "icon": "inventory_2",
+                        "link": reverse_lazy("admin:buyzoneapp_product_changelist"),
+                    },
+                    {
+                        "title": "Product Variants & Stock",
+                        "icon": "style",
+                        "link": reverse_lazy("admin:buyzoneapp_productvariant_changelist"),
+                    },
+                    {
+                        "title": "Categories",
+                        "icon": "category",
+                        "link": reverse_lazy("admin:buyzoneapp_category_changelist"),
+                    },
+                    {
+                        "title": "Subcategories",
+                        "icon": "folder_special",
+                        "link": reverse_lazy("admin:buyzoneapp_subcategory_changelist"),
+                    },
+                    {
+                        "title": "Size Options",
+                        "icon": "straighten",
+                        "link": reverse_lazy("admin:buyzoneapp_size_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Sales & Orders",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Customer Orders",
+                        "icon": "shopping_cart",
+                        "link": reverse_lazy("admin:buyzoneapp_orders_changelist"),
+                    },
+                    {
+                        "title": "Refundable Orders",
+                        "icon": "currency_exchange",
+                        "link": reverse_lazy("admin:buyzoneapp_cancelledpaidorder_changelist"),
+                    },
+                    {
+                        "title": "Order Timeline / Updates",
+                        "icon": "published_with_changes",
+                        "link": reverse_lazy("admin:buyzoneapp_orderupdate_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Logistics & Delivery",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Delivery Agents",
+                        "icon": "local_shipping",
+                        "link": reverse_lazy("admin:delivery_deliveryboy_changelist"),
+                    },
+                    {
+                        "title": "Delivery OTPs",
+                        "icon": "pin",
+                        "link": reverse_lazy("admin:delivery_deliveryotp_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Users & Access",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Users & Customers",
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                    },
+                    {
+                        "title": "User Groups",
+                        "icon": "admin_panel_settings",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Support & Inquiries",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Customer Messages",
+                        "icon": "support_agent",
+                        "link": reverse_lazy("admin:buyzoneapp_contact_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Account & Session",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "View Store Website",
+                        "icon": "storefront",
+                        "link": "/",
+                    },
+                    {
+                        "title": "Logout",
+                        "icon": "logout",
+                        "link": "/auth/logout/",
+                    },
+                ],
+            },
+        ],
     },
-
-    # Layout
-    "sidebar_fixed": True,
-    "navbar_fixed": True,
-    "footer_fixed": False,
-    "sidebar_mini": False,
-
-    # Icons
-    "icons": {
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
-        "buyzoneapp.Product": "fas fa-box",
-        "buyzoneapp.Orders": "fas fa-shopping-cart",
-        "buyzoneapp.OrderUpdate": "fas fa-truck",
-        "buyzoneapp.Contact": "fas fa-envelope",
-        "buyzoneapp.Size": "fas fa-ruler",
-        "buyzoneapp.ProductVariant": "fas fa-tags",
-        "buyzoneapp.CancelledPaidOrder": "fas fa-ban",
-        "delivery.DeliveryBoy": "fas fa-motorcycle",
-        "delivery.DeliveryOTP": "fas fa-key",
-        
+    "ACCOUNT": {
+        "navigation": [
+            {
+                "title": "View Store Website",
+                "icon": "storefront",
+                "link": "/",
+            },
+            {
+                "title": "Logout",
+                "icon": "logout",
+                "link": "/auth/logout/",
+            },
+        ],
     },
-
-    # UX
-    "related_modal_active": True,
-    "changeform_format": "horizontal_tabs",
-    "show_ui_builder": False,
-
-    # Custom files (loader here)
-    "custom_css": "assets/css/admin_custom.css",
-    "custom_js": "assets/js/admin_custom.js",
+    "STYLES": [
+        lambda request: static("assets/css/admin_custom.css"),
+    ],
+    "SCRIPTS": [
+        lambda request: static("assets/js/admin_dashboard.js"),
+    ],
+    "COLORS": {
+        "primary": {
+            "50": "238 242 255",
+            "100": "224 231 255",
+            "200": "199 210 254",
+            "300": "165 180 252",
+            "400": "129 140 248",
+            "500": "99 102 241",
+            "600": "79 70 229",
+            "700": "67 56 202",
+            "800": "55 48 163",
+            "900": "49 46 129",
+            "950": "30 27 75",
+        },
+    },
 }

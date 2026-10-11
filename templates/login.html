@@ -134,8 +134,8 @@
     <form action="/auth/login/" method="post" id="login-form" data-aos="fade-up" data-aos-delay="100">
       {% csrf_token %}
       
-      <label for="email" class="form-label">Email Address</label>
-      <input type="email" class="form-control" id="email" name="email" required placeholder="name@example.com">
+      <label for="email" class="form-label">Email Address or Username</label>
+      <input type="text" class="form-control" id="email" name="email" required autocomplete="username" placeholder="name@example.com or admin">
       
       <label for="pass1" class="form-label">Password</label>
       <input type="password" class="form-control" id="pass1" name="pass1" required placeholder="••••••••">

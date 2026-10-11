@@ -1,4 +1,5 @@
 import json
+import time
 import threading
 from math import ceil
 from decimal import Decimal
@@ -24,7 +25,9 @@ from helper import send_email_async
 from .models import Orders, OrderUpdate, Product, Contact, ProductVariant, Category
 from .utils.refund import refund_payment
 
-client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+# Initialize Razorpay client helper safely using settings
+def get_razorpay_client():
+    return razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
 def index(request):
     allProds = []
@@ -47,11 +50,11 @@ def index(request):
 
 
 def contact(request):
-    if not request.user.is_authenticated:
-        messages.warning(request, "Please login first")
-        return redirect('/auth/login/')
-    
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.warning(request, "Please login first to submit an inquiry.")
+            return redirect('/auth/login/')
+        
         name = request.POST.get('name')
         email = request.POST.get('email')
         desc = request.POST.get('desc')
@@ -62,7 +65,7 @@ def contact(request):
             return render(request, "contact.html")
 
         Contact.objects.create(name=name, email=email, desc=desc, phoneNo=phoneNo)
-        messages.info(request, 'We will get back to you soon!')
+        messages.info(request, 'Thank you! We will get back to you soon.')
         return redirect('contact')
     
     return render(request, "contact.html")
@@ -73,7 +76,7 @@ def about(request):
 
 
 def sign(request):
-    return render(request, "sign.html")
+    return redirect('auth:signup')
 
 
 def checkout(request):
@@ -187,6 +190,7 @@ def checkout(request):
                 order.save()
                 return render(request, 'order_success.html', {'order': order})
 
+            client = get_razorpay_client()
             razorpay_order = client.order.create({"amount": int(amount * 100), "currency": "INR"})
             order.oid = razorpay_order['id']
             order.paymentstatus = "Pending"
@@ -216,19 +220,28 @@ def order_activity(request, order_id):
         return redirect('/auth/login/')
 
     order = get_object_or_404(Orders, oid=order_id, email=request.user.email)
-    items = json.loads(order.items_json or "{}")
+    items = json.loads(order.items_json or "{}") if isinstance(order.items_json, str) else (order.items_json or {})
 
     products = []
     for pid, value in items.items():
         try:
-            product = Product.objects.prefetch_related('additional_images').get(id=int(str(pid).replace("pr","")))
+            clean_id = int(str(pid).replace("pr",""))
+            product = Product.objects.prefetch_related('additional_images').get(id=clean_id)
+            if isinstance(value, list):
+                qty = value[0] if len(value) > 0 else 1
+                price = value[2] if len(value) > 2 else product.price
+                size = value[5] if len(value) > 5 else None
+            else:
+                qty = value.get("qty", 1)
+                price = value.get("price", product.price)
+                size = value.get("size")
             products.append({
                 "product": product,
-                "quantity": value[0],
-                "price": value[2],
-                "size": value[5] if len(value) > 5 else None
+                "quantity": qty,
+                "price": price,
+                "size": size
             })
-        except Product.DoesNotExist:
+        except Exception:
             continue
 
     updates = order.updates.order_by('-update_date')
@@ -240,7 +253,16 @@ def payment_status(request):
     razorpay_order_id = request.GET.get('razorpay_order_id', '')
     razorpay_payment_id = request.GET.get('razorpay_payment_id', '')
     message = request.GET.get('message', '')
-    order = get_object_or_404(Orders, oid=razorpay_order_id)
+    
+    order = Orders.objects.filter(oid=razorpay_order_id).first()
+    if not order:
+        return render(request, 'paymentstatus.html', {
+            'status': status,
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': razorpay_payment_id,
+            'amount': 0,
+            'message': 'Order information not found.'
+        })
 
     if razorpay_payment_id:
         order.payment_id = razorpay_payment_id
@@ -249,59 +271,117 @@ def payment_status(request):
         order.paymentstatus = 'Paid'
         if not order.amountpaid:
             order.amountpaid = order.amount
-        OrderUpdate.objects.create(order=order, update_desc="Payment received successfully.")
+        OrderUpdate.objects.get_or_create(order=order, update_desc="Payment received successfully via Razorpay.")
     elif status in ['failure', 'canceled']:
-        order.paymentstatus = 'Cancelled'
-        order.amountpaid = 0
-        OrderUpdate.objects.create(order=order, update_desc="Payment cancelled by user during checkout.")
+        if order.paymentstatus != 'Paid':
+            order.paymentstatus = 'Cancelled'
+            order.amountpaid = 0
+            OrderUpdate.objects.get_or_create(order=order, update_desc="Payment cancelled by user during checkout.")
     else:
-        order.paymentstatus = 'Unknown'
+        if order.paymentstatus != 'Paid':
+            order.paymentstatus = 'Pending'
 
     order.save()
     return render(request, 'paymentstatus.html', {
-        'status': status, 'razorpay_order_id': razorpay_order_id,
-        'razorpay_payment_id': razorpay_payment_id, 'amount': order.amountpaid, 'message': message
+        'status': status,
+        'razorpay_order_id': razorpay_order_id,
+        'razorpay_payment_id': razorpay_payment_id,
+        'amount': order.amountpaid or order.amount,
+        'message': message,
+        'order': order
     })
 
 
 @csrf_exempt
 def handlerequest(request):
     if request.method != "POST":
-        return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+        return JsonResponse({
+            "status": "error",
+            "message": "Invalid request"
+        }, status=405)
+
+    params_dict = {}
 
     try:
         data = json.loads(request.body)
+
         params_dict = {
-            'razorpay_order_id': data.get('razorpay_order_id'),
-            'razorpay_payment_id': data.get('razorpay_payment_id'),
-            'razorpay_signature': data.get('razorpay_signature')
+            "razorpay_order_id": data.get("razorpay_order_id"),
+            "razorpay_payment_id": data.get("razorpay_payment_id"),
+            "razorpay_signature": data.get("razorpay_signature"),
         }
 
         if not all(params_dict.values()):
-            return JsonResponse({'status': 'error', 'message': 'Missing payment data'})
+            return JsonResponse({
+                "status": "error",
+                "message": "Missing payment data"
+            }, status=400)
 
+        # Verify Razorpay signature
+        client = get_razorpay_client()
         client.utility.verify_payment_signature(params_dict)
-        order = Orders.objects.filter(oid=params_dict['razorpay_order_id']).first()
-        if not order:
-            return JsonResponse({'status': 'error', 'message': 'Order not found'})
 
-        order.paymentstatus = 'Paid'
-        order.amountpaid = order.amount 
-        order.payment_id = params_dict['razorpay_payment_id']
+        # Find our Django order
+        order = Orders.objects.filter(
+            oid=params_dict["razorpay_order_id"]
+        ).first()
+
+        if not order:
+            return JsonResponse({
+                "status": "error",
+                "message": "Order not found"
+            }, status=404)
+
+        # Payment successfully verified
+        order.paymentstatus = "Paid"
+        order.amountpaid = order.amount
+        order.payment_id = params_dict["razorpay_payment_id"]
         order.save()
-        return JsonResponse({'status': 'success'})
+
+        OrderUpdate.objects.create(
+            order=order,
+            update_desc="Payment successfully verified through Razorpay."
+        )
+
+        return JsonResponse({
+            "status": "success"
+        })
 
     except SignatureVerificationError:
-        order = Orders.objects.filter(oid=params_dict['razorpay_order_id']).first()
+        order = None
+
+        if params_dict.get("razorpay_order_id"):
+            order = Orders.objects.filter(
+                oid=params_dict["razorpay_order_id"]
+            ).first()
+
         if order:
             order.paymentstatus = "Failed"
             order.save()
-            OrderUpdate.objects.create(order=order, update_desc="Payment failed or cancelled by user.")
-        return JsonResponse({'status': 'error', 'message': 'Signature verification failed'})
+
+            OrderUpdate.objects.create(
+                order=order,
+                update_desc="Razorpay payment signature verification failed."
+            )
+
+        return JsonResponse({
+            "status": "error",
+            "message": "Payment signature verification failed"
+        }, status=400)
+
+    except json.JSONDecodeError:
+        return JsonResponse({
+            "status": "error",
+            "message": "Invalid JSON"
+        }, status=400)
+
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)})
+        print("Razorpay verification error:", e)
 
-
+        return JsonResponse({
+            "status": "error",
+            "message": "Payment verification failed"
+        }, status=500)
 def profile(request):
     if not request.user.is_authenticated:
         messages.warning(request, "Please login first")
@@ -328,10 +408,23 @@ def profile(request):
 
 
 def productDetails(request, product_id):
-    product = get_object_or_404(Product.objects.prefetch_related('additional_images'), id=product_id)
-    rating = min(product.Rating, 5)
+    product = get_object_or_404(
+        Product.objects.prefetch_related('additional_images', 'variants__size'),
+        id=product_id
+    )
+    rating = min(product.Rating, 5) if product.Rating else 5
     stars = list(range(1, rating + 1))
-    return render(request, 'productDetail.html', {'product': product, 'stars': stars})
+    variants = product.variants.select_related('size').all()
+    variants_data = [
+        {"id": v.id, "size": v.size.name, "stock": v.stock}
+        for v in variants
+    ]
+    return render(request, 'productDetail.html', {
+        'product': product,
+        'stars': stars,
+        'variants': variants,
+        'variants_json': json.dumps(variants_data)
+    })
 
 
 def category_products(request, category):
@@ -432,3 +525,19 @@ def live_search_api(request):
                 'url': f'/productDetails/{p.id}/'
             })
     return JsonResponse({'products': products})
+
+
+def custom_400_view(request, exception=None):
+    return render(request, '400.html', status=400)
+
+
+def custom_403_view(request, exception=None):
+    return render(request, '403.html', status=403)
+
+
+def custom_404_view(request, exception=None):
+    return render(request, '404.html', status=404)
+
+
+def custom_500_view(request):
+    return render(request, '500.html', status=500)

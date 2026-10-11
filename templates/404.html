@@ -4,124 +4,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MH Club | 404 - Page Not Found</title>
+  <title>404 - Page Not Found | MH Club</title>
+  <link rel="icon" href="{% static 'images/logo.png' %}">
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <!-- Inter Font (Premium Editorial Look) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bg-main: #ffffff;
-      --text-main: #111111;
-      --text-muted: #767676;
+      --bg-muted: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --radius-pill: 50px;
+      --radius-card: 24px;
     }
 
     body {
-      background-color: var(--bg-main);
-      font-family: 'Inter', sans-serif;
-      height: 100vh;
+      background-color: var(--bg-muted);
+      font-family: 'Outfit', 'Inter', sans-serif;
+      min-height: 100vh;
       margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
+      padding: 20px;
       color: var(--text-main);
       -webkit-font-smoothing: antialiased;
     }
 
-    .error-container {
-      padding: 40px 20px;
-      max-width: 600px;
+    .error-card {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-card);
+      padding: 48px 36px;
+      max-width: 540px;
       width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+      animation: fadeIn 0.4s ease-out;
     }
 
-    .error-image {
-      width: 100%;
-      max-width: 280px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
       margin-bottom: 2rem;
-      border-radius: 16px;
-      object-fit: cover;
     }
 
-    h1 {
-      font-size: 8rem;
-      font-weight: 700;
-      letter-spacing: -4px;
-      margin-bottom: 0;
+    .brand-logo img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .icon-badge {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: #475569;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem auto;
+      font-size: 2.2rem;
+    }
+
+    .error-code {
+      font-size: 4rem;
+      font-weight: 800;
+      letter-spacing: -2px;
       line-height: 1;
+      margin-bottom: 0.5rem;
       color: var(--text-main);
     }
 
-    h2 {
-      font-weight: 500;
-      font-size: 1.5rem;
+    .error-title {
+      font-size: 1.35rem;
+      font-weight: 600;
       letter-spacing: -0.5px;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-main);
     }
 
-    p {
+    .error-desc {
       color: var(--text-muted);
       font-size: 0.95rem;
-      margin-bottom: 3rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      font-family: 'Inter', sans-serif;
     }
 
-    .btn-home {
-      background-color: var(--text-main);
-      color: var(--bg-main);
-      border-radius: 50px;
-      padding: 14px 36px;
-      font-weight: 500;
-      font-size: 0.95rem;
-      letter-spacing: 0.5px;
+    .btn-action-dark {
+      background-color: #0f172a;
+      color: #ffffff;
+      border-radius: var(--radius-pill);
+      padding: 13px 28px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
       text-decoration: none;
-      transition: all 0.3s ease;
-      border: 1px solid var(--text-main);
-      display: inline-block;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #0f172a;
     }
 
-    .btn-home:hover {
+    .btn-action-dark:hover {
+      background-color: #334155;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .btn-action-outline {
       background-color: transparent;
       color: var(--text-main);
+      border-radius: var(--radius-pill);
+      padding: 13px 28px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-color);
     }
 
-    .footer-text {
-      margin-top: 5rem;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .btn-action-outline:hover {
+      background-color: var(--bg-muted);
+      border-color: #94a3b8;
+      transform: translateY(-2px);
     }
-    
-    @media (max-width: 768px) {
-      h1 { font-size: 6rem; }
-      .error-image { max-width: 220px; }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
-  
-  <div class="error-container">
-    
-    <!-- Using your exact backend static image link -->
-    <img src="{% static 'images/404.jpg' %}" alt="404 Error" class="error-image" onerror="this.style.display='none'">
-    
-    <h1>404</h1>
-    <h2>Page Not Found</h2>
-    <p>The page you are looking for doesn’t exist or has been moved.</p>
-    
-    <a href="/" class="btn-home">
-      Return to Store
-    </a>
-    
-    <div class="footer-text">
-      © {{ now|date:"Y" }} <strong>MH Club</strong>. All rights reserved.
+
+  <div class="error-card">
+    <div class="brand-logo">
+      <img src="{% static 'images/logo.png' %}" alt="MH Club" onerror="this.style.display='none'">
+      MH CLUB
     </div>
 
+    <div class="icon-badge">
+      <i class="bi bi-compass"></i>
+    </div>
+
+    <div class="error-code">404</div>
+    <div class="error-title">Page Not Found</div>
+    <p class="error-desc">
+      The page you're looking for doesn't exist, was renamed, or is temporarily unavailable. Let's get you back to the latest collection.
+    </p>
+
+    <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+      <a href="/" class="btn-action-dark">
+        <i class="bi bi-bag me-2"></i> Explore Store
+      </a>
+      <a href="javascript:history.back()" class="btn-action-outline">
+        <i class="bi bi-arrow-left me-2"></i> Go Back
+      </a>
+    </div>
+
+    <div class="footer-note">
+      Looking for something specific? <a href="/contact/" class="text-dark fw-bold text-decoration-none">Contact Us</a>
+    </div>
   </div>
 
 </body>

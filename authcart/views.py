@@ -11,6 +11,7 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.views.generic import View
 from django.contrib.auth import login, logout, authenticate
+from django.db.models import Q
 
 from helper import send_email_async
 
@@ -76,29 +77,16 @@ def signup(request):
         token = generate_token.make_token(user)
 
         # ======================================================
-        # OLD RENDER SERVER LINK
-        # KEPT COMMENTED - NOT USED
+        # DYNAMIC ACTIVATION LINK
         # ======================================================
-
-        # activation_link = (
-        #     f"https://buyzone-jrtq.onrender.com/"
-        #     f"auth/activate/{uid}/{token}/"
-        # )
-
-        # ======================================================
-        # LOCAL DEVELOPMENT SERVER LINK
-        # ======================================================
-
-        activation_link = (
-            f"http://127.0.0.1:8000/"
-            f"auth/activate/{uid}/{token}/"
-        )
+        base_url = request.build_absolute_uri('/')[:-1]
+        activation_link = f"{base_url}/auth/activate/{uid}/{token}/"
 
         # ==============================
         # EMAIL CONTENT
         # ==============================
 
-        subject = "Activate Your BuyZone Account"
+        subject = "Activate Your MH Club Account"
 
         message = f"""
         <!DOCTYPE html>
@@ -106,7 +94,7 @@ def signup(request):
 
         <head>
             <meta charset="UTF-8">
-            <title>Activate Your BuyZone Account</title>
+            <title>Activate Your MH Club Account</title>
         </head>
 
         <body style="
@@ -145,7 +133,7 @@ def signup(request):
                             <!-- Header -->
                             <tr>
                                 <td style="
-                                    background-color:#0d6efd;
+                                    background-color:#111111;
                                     padding:25px;
                                     text-align:center;
                                 ">
@@ -154,8 +142,9 @@ def signup(request):
                                         color:#ffffff;
                                         margin:0;
                                         font-size:26px;
+                                        letter-spacing:1px;
                                     ">
-                                        BuyZone
+                                        MH Club
                                     </h1>
 
                                     <p style="
@@ -163,7 +152,7 @@ def signup(request):
                                         margin:5px 0 0;
                                         font-size:14px;
                                     ">
-                                        Smarter Online Shopping Experience
+                                        Elevate Your Everyday Style & Fashion
                                     </p>
 
                                 </td>
@@ -186,9 +175,9 @@ def signup(request):
                                         line-height:1.6;
                                     ">
                                         Thank you for creating an account on
-                                        <strong>BuyZone</strong>.
+                                        <strong>MH Club</strong>.
                                         You are just one step away from accessing
-                                        exclusive deals and managing your orders.
+                                        exclusive collections, tracking orders, and enjoying express checkout.
                                     </p>
 
                                     <p style="
@@ -209,7 +198,7 @@ def signup(request):
                                         <a
                                             href="{activation_link}"
                                             style="
-                                                background-color:#0d6efd;
+                                                background-color:#111111;
                                                 color:#ffffff;
                                                 padding:14px 28px;
                                                 text-decoration:none;
@@ -236,7 +225,7 @@ def signup(request):
                                     <p style="
                                         font-size:13px;
                                         word-break:break-all;
-                                        color:#0d6efd;
+                                        color:#111111;
                                     ">
                                         {activation_link}
                                     </p>
@@ -257,7 +246,7 @@ def signup(request):
                                         font-size:14px;
                                     ">
                                         Regards,<br>
-                                        <strong>BuyZone Team</strong>
+                                        <strong>MH Club Team</strong>
                                     </p>
 
                                 </td>
@@ -274,7 +263,7 @@ def signup(request):
                                     color:#6c757d;
                                 ">
 
-                                    © 2026 BuyZone. All rights reserved.
+                                    © 2026 MH Club. All rights reserved.
 
                                 </td>
                             </tr>
@@ -403,17 +392,32 @@ class ActivateAccountView(View):
 
 def handlelogin(request):
 
+    if request.user.is_authenticated:
+        if request.user.groups.filter(name="DeliveryBoy").exists():
+            return redirect("delivery_dashboard")
+        if request.user.is_staff or request.user.is_superuser:
+            return redirect('/admin/')
+        return redirect("/")
+
     if request.method == "POST":
 
-        username = request.POST['email']
-        userpassword = request.POST['pass1']
+        identifier = request.POST.get('email', '').strip()
+        userpassword = request.POST.get('pass1', '')
 
         myuser = authenticate(
-            username=username,
+            request,
+            username=identifier,
             password=userpassword
         )
 
         if myuser is not None:
+
+            if not myuser.is_active:
+                messages.warning(
+                    request,
+                    "Your account is inactive. Please activate your account via email or contact support."
+                )
+                return redirect('/auth/login/')
 
             login(request, myuser)
 
@@ -425,10 +429,24 @@ def handlelogin(request):
             if myuser.groups.filter(name="DeliveryBoy").exists():
                 return redirect("delivery_dashboard")
 
-            if request.user.is_staff or request.user.is_superuser:
+            if myuser.is_staff or myuser.is_superuser:
                 return redirect('/admin/')
 
             return redirect("/")
+
+        # Check if credentials match an existing account that is not yet activated
+        try:
+            inactive_user = User.objects.filter(
+                Q(username__iexact=identifier) | Q(email__iexact=identifier)
+            ).first()
+            if inactive_user and inactive_user.check_password(userpassword) and not inactive_user.is_active:
+                messages.warning(
+                    request,
+                    "Your account has not been activated yet. Please check your email for the activation link."
+                )
+                return redirect('/auth/login/')
+        except Exception:
+            pass
 
         messages.error(
             request,
@@ -495,23 +513,10 @@ class RequestResetEmailView(View):
             token = PasswordResetTokenGenerator().make_token(user)
 
             # ======================================================
-            # OLD RENDER RESET LINK
-            # KEPT COMMENTED - NOT USED
+            # DYNAMIC PASSWORD RESET LINK
             # ======================================================
-
-            # reset_link = (
-            #     f"https://buyzone-jrtq.onrender.com/"
-            #     f"auth/set-new-password/{uid}/{token}/"
-            # )
-
-            # ======================================================
-            # LOCAL DEVELOPMENT SERVER RESET LINK
-            # ======================================================
-
-            reset_link = (
-                f"http://127.0.0.1:8000/"
-                f"auth/set-new-password/{uid}/{token}/"
-            )
+            base_url = request.build_absolute_uri('/')[:-1]
+            reset_link = f"{base_url}/auth/set-new-password/{uid}/{token}/"
 
             # ==============================
             # EMAIL CONTENT
@@ -523,7 +528,7 @@ class RequestResetEmailView(View):
 
             <head>
                 <meta charset="UTF-8">
-                <title>Reset Your BuyZone Password</title>
+                <title>Reset Your MH Club Password</title>
             </head>
 
             <body style="
@@ -559,7 +564,7 @@ class RequestResetEmailView(View):
                     <!-- Header -->
                     <tr>
                     <td style="
-                        background:#dc3545;
+                        background:#111111;
                         padding:25px;
                         text-align:center;
                     ">
@@ -567,13 +572,14 @@ class RequestResetEmailView(View):
                         <h1 style="
                             margin:0;
                             color:#ffffff;
+                            letter-spacing:1px;
                         ">
-                            BuyZone
+                            MH Club
                         </h1>
 
                         <p style="
                             margin:5px 0 0;
-                            color:#f8d7da;
+                            color:#e9ecef;
                         ">
                             Password Reset Request
                         </p>
@@ -598,7 +604,7 @@ class RequestResetEmailView(View):
                             line-height:1.6;
                         ">
                             We received a request to reset your
-                            <strong>BuyZone</strong> account password.
+                            <strong>MH Club</strong> account password.
                         </p>
 
                         <p style="font-size:15px;">
@@ -615,7 +621,7 @@ class RequestResetEmailView(View):
                             <a
                                 href="{reset_link}"
                                 style="
-                                    background:#dc3545;
+                                    background:#111111;
                                     color:#ffffff;
                                     padding:14px 28px;
                                     text-decoration:none;
@@ -642,7 +648,7 @@ class RequestResetEmailView(View):
                         <p style="
                             font-size:13px;
                             word-break:break-all;
-                            color:#dc3545;
+                            color:#111111;
                         ">
                             {reset_link}
                         </p>
@@ -659,7 +665,7 @@ class RequestResetEmailView(View):
 
                         <p style="margin-top:30px;">
                             Regards,<br>
-                            <strong>BuyZone Team</strong>
+                            <strong>MH Club Team</strong>
                         </p>
 
                     </td>
@@ -676,7 +682,7 @@ class RequestResetEmailView(View):
                         color:#6c757d;
                     ">
 
-                        © 2026 BuyZone. All rights reserved.
+                        © 2026 MH Club. All rights reserved.
 
                     </td>
                     </tr>

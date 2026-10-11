@@ -1,19 +1,84 @@
-/* Force Jazzmin logo size override */
-img.brand-image, img.brand-image-xl {
-    height: 40px !important;   /* 👈 force height */
-    width: auto !important;    /* 👈 keep aspect ratio */
-    object-fit: contain !important;
-    max-height: 40px !important;
+/* ==========================================================
+   MH CLUB - VIBRANT, COLORFUL & ANIMATED UNFOLD ADMIN THEME
+   ========================================================== */
+
+/* Page Smooth Fade-In Animation */
+body {
+    animation: unfoldFadeIn 0.4s ease-out;
 }
 
-/* Optional: if the image is still too big in some themes */
-.brand-link .brand-image-xl {
-    height: 40px !important;
-    width: auto !important;
+@keyframes unfoldFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-/* Force login page logo size */
-.login-logo img {
-    height: 80px !important;
-    width: auto !important;
-    object-fit: contain;
+
+/* Vibrant Gradient Buttons */
+button[type="submit"], 
+input[type="submit"],
+.btn-primary,
+a.button {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    border-radius: 9999px !important;
+    padding: 8px 20px !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4) !important;
+    transition: all 0.25s ease-in-out !important;
+}
+
+button[type="submit"]:hover, 
+input[type="submit"]:hover,
+.btn-primary:hover,
+a.button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
+}
+
+/* Sleek Hover Effects on Cards & Dashboards */
+div[class*="bg-white"], div[class*="dark:bg-gray-800"] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+div[class*="bg-white"]:hover {
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.08) !important;
+}
+
+/* Sidebar Polish */
+aside {
+    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* ==========================================================
+   CUSTOM HEADER STYLING & COLOR FOR UNFOLD (FIXED CONTRAST)
+   ========================================================== */
+
+/* Target strictly the top header / sticky navigation bar */
+header, nav.sticky {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%) !important; /* Rich Indigo/Navy gradient */
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Force all text, headings, breadcrumbs, links, and icons inside the header to be crisp white */
+header h1, 
+header h2, 
+header h3, 
+header span, 
+header a, 
+header p, 
+header i, 
+header svg {
+    color: #ffffff !important;
+}
+
+/* Hover effect for header links */
+header a:hover {
+    color: #a5b4fc !important; /* Soft light indigo highlight */
+}
+
+/* Brand header title styling inside the sidebar/top bar */
+.sidebar-header, a[class*="font-bold"] {
+    letter-spacing: -0.5px;
 }

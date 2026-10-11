@@ -134,23 +134,76 @@ MH Club | {{ product.product_name }}
     margin-bottom: 1.5rem;
   }
 
-  /* Pill Button */
+  /* Pill Buttons */
   .btn-cart-pill {
     background-color: var(--text-main);
     color: var(--bg-main);
     border-radius: 50px;
-    padding: 16px 32px;
-    font-size: 1rem;
-    font-weight: 500;
+    padding: 15px 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
     border: 1px solid var(--text-main);
     transition: all 0.3s ease;
-    width: 100%;
     letter-spacing: 0.5px;
+    cursor: pointer;
   }
 
   .btn-cart-pill:hover {
-    background-color: var(--bg-main);
-    color: var(--text-main);
+    background-color: #222;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  .btn-buynow-pill {
+    background-color: #059669;
+    color: #ffffff;
+    border-radius: 50px;
+    padding: 15px 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid #059669;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+
+  .btn-buynow-pill:hover {
+    background-color: #047857;
+    border-color: #047857;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  /* Size Selection Pills */
+  .size-pill-btn {
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #111;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .size-pill-btn:hover:not(:disabled) {
+    border-color: #111;
+    background: #f9f9f9;
+  }
+
+  .size-pill-btn.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+
+  .size-pill-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    background: #f3f3f3;
   }
 
   @media (max-width: 768px) {
@@ -234,7 +287,7 @@ MH Club | {{ product.product_name }}
         {% for i in stars %}
         <i class="bi bi-star-fill"></i>
         {% endfor %}
-        <span class="ms-2 text-muted" style="font-size: 0.85rem;">(Reviews)</span>
+        <span class="ms-2 text-muted" style="font-size: 0.85rem;">({{ stars|length }}.0 Rating)</span>
       </div>
 
       <!-- Price -->
@@ -243,13 +296,18 @@ MH Club | {{ product.product_name }}
         {% if product.OldPrice %}
         <del class="ms-2 text-muted" style="font-size: 1.1rem; font-weight: 400;">₹{{ product.OldPrice }}</del>
         {% endif %}
+        {% if product.Discount %}
+        <span class="badge bg-danger-subtle text-danger ms-2" style="font-size: 0.8rem; font-weight: 600;">
+          {{ product.Discount }}% OFF
+        </span>
+        {% endif %}
       </div>
 
       <!-- Product Info -->
       <h5 class="product-section-title">The Details</h5>
       <p class="product-desc">{{ product.desc }}</p>
 
-      <ul class="details-list mb-5">
+      <ul class="details-list mb-4">
         <li>
           <strong>Category</strong>
           <span>{{ product.category|title }}</span>
@@ -264,16 +322,43 @@ MH Club | {{ product.product_name }}
         </li>
       </ul>
 
+      <!-- Size Selector -->
+      {% if variants %}
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="fw-bold" style="font-size: 0.9rem; color: var(--text-main);">Select Size</span>
+          <span id="stock-indicator" class="badge rounded-pill" style="font-size: 0.75rem;"></span>
+        </div>
+        <div class="d-flex flex-wrap gap-2" id="size-selector-group">
+          {% for v in variants %}
+          <button type="button" 
+                  class="size-pill-btn {% if forloop.first %}active{% endif %}" 
+                  data-size="{{ v.size.name }}" 
+                  data-stock="{{ v.stock }}"
+                  data-variant-id="{{ v.id }}"
+                  {% if v.stock <= 0 %}disabled{% endif %}>
+            {{ v.size.name }}
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
       <!-- Hidden variables for JS functionality -->
       <span id="namepr{{product.id}}" hidden>{{ product.product_name }}</span>
       <span id="pricepr{{product.id}}" hidden>{{ product.price }}</span>
-      <span id="oldpricepr{{product.id}}" hidden>{{ product.OldPrice }}</span>
-      <span id="discountpr{{product.id}}" hidden>{{ product.Discount }}</span>
+      <span id="oldpricepr{{product.id}}" hidden>{{ product.OldPrice|default:"0" }}</span>
+      <span id="discountpr{{product.id}}" hidden>{{ product.Discount|default:"0" }}</span>
 
-      <!-- ADD TO CART / PLUS-MINUS AREA -->
-      <div id="divpr{{product.id}}" class="divpr mt-4">
-        <button id="pr{{product.id}}" class="btn-cart-pill cart">
-          Add To Bag
+      <!-- Action Buttons -->
+      <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+        <div id="divpr{{product.id}}" class="divpr flex-grow-1">
+          <button id="pr{{product.id}}" class="btn-cart-pill cart w-100">
+            <i class="bi bi-bag-plus me-1"></i> Add To Bag
+          </button>
+        </div>
+        <button id="buyNowBtn" class="btn-buynow-pill flex-grow-1">
+          <i class="bi bi-lightning-charge me-1"></i> Buy Now
         </button>
       </div>
 
@@ -295,8 +380,10 @@ MH Club | {{ product.product_name }}
     // Update active thumbnail border styling
     document.querySelectorAll(".thumbnail-item").forEach(item => {
       item.style.borderColor = "#eee";
+      item.classList.remove("active-thumb");
     });
     element.style.borderColor = "#111";
+    element.classList.add("active-thumb");
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -322,27 +409,72 @@ MH Club | {{ product.product_name }}
       });
     }
 
+    /* =========================
+       SIZE & STOCK SELECTION
+    ========================= */
+    const sizeButtons = document.querySelectorAll(".size-pill-btn");
+    const stockIndicator = document.getElementById("stock-indicator");
+
+    function getSelectedSize() {
+      const activeBtn = document.querySelector(".size-pill-btn.active");
+      if (activeBtn) return activeBtn.dataset.size;
+      const firstEnabled = document.querySelector(".size-pill-btn:not(:disabled)");
+      return firstEnabled ? firstEnabled.dataset.size : "";
+    }
+
+    function updateStockIndicator() {
+      if (!stockIndicator) return;
+      const activeBtn = document.querySelector(".size-pill-btn.active");
+      if (!activeBtn) {
+        stockIndicator.textContent = "Out of Stock";
+        stockIndicator.className = "badge bg-danger-subtle text-danger border border-danger-subtle";
+        return;
+      }
+
+      const stock = parseInt(activeBtn.dataset.stock, 10) || 0;
+      if (stock > 5) {
+        stockIndicator.textContent = "In Stock (" + stock + ")";
+        stockIndicator.className = "badge bg-success-subtle text-success border border-success-subtle";
+      } else if (stock > 0) {
+        stockIndicator.textContent = "Only " + stock + " left!";
+        stockIndicator.className = "badge bg-warning-subtle text-warning-emphasis border border-warning-subtle";
+      } else {
+        stockIndicator.textContent = "Out of Stock";
+        stockIndicator.className = "badge bg-danger-subtle text-danger border border-danger-subtle";
+      }
+    }
+
+    sizeButtons.forEach(btn => {
+      btn.addEventListener("click", function () {
+        if (this.disabled) return;
+        sizeButtons.forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
+        updateStockIndicator();
+      });
+    });
+
+    updateStockIndicator();
     updateCart(cart);
 
     /* =========================
        ADD TO CART
     ========================= */
     document.addEventListener("click", function (e) {
-      if (!e.target.classList.contains("cart")) return;
+      const target = e.target.closest(".cart");
+      if (!target) return;
 
-      const id = e.target.id;
-      const name = document.getElementById("name" + id).innerText;
-      const price = document.getElementById("price" + id).innerText;
-
-      const oldPriceEl = document.getElementById("oldprice" + id);
-      const discountEl = document.getElementById("discount" + id);
-      const oldPrice = oldPriceEl ? oldPriceEl.innerText : "0";
-      const discount = discountEl ? discountEl.innerText : "0";
+      const id = target.id;
+      const name = document.getElementById("name" + id)?.innerText || "{{ product.product_name }}";
+      const price = document.getElementById("price" + id)?.innerText || "{{ product.price }}";
+      const oldPrice = document.getElementById("oldprice" + id)?.innerText || "0";
+      const discount = document.getElementById("discount" + id)?.innerText || "0";
+      const selectedSize = getSelectedSize();
 
       if (cart[id]) {
         cart[id][0]++;
+        if (selectedSize) cart[id][5] = selectedSize;
       } else {
-        cart[id] = [1, name, price, oldPrice, discount];
+        cart[id] = [1, name, price, oldPrice, discount, selectedSize];
       }
 
       saveCart();
@@ -350,34 +482,65 @@ MH Club | {{ product.product_name }}
     });
 
     /* =========================
+       BUY NOW BUTTON
+    ========================= */
+    const buyNowBtn = document.getElementById("buyNowBtn");
+    if (buyNowBtn) {
+      buyNowBtn.addEventListener("click", function () {
+        const id = "pr{{ product.id }}";
+        const name = document.getElementById("name" + id)?.innerText || "{{ product.product_name }}";
+        const price = document.getElementById("price" + id)?.innerText || "{{ product.price }}";
+        const oldPrice = document.getElementById("oldprice" + id)?.innerText || "0";
+        const discount = document.getElementById("discount" + id)?.innerText || "0";
+        const selectedSize = getSelectedSize();
+
+        if (cart[id]) {
+          cart[id][0] = Math.max(cart[id][0], 1);
+          if (selectedSize) cart[id][5] = selectedSize;
+        } else {
+          cart[id] = [1, name, price, oldPrice, discount, selectedSize];
+        }
+
+        saveCart();
+        window.location.href = `/checkout/?itemsJson=${encodeURIComponent(JSON.stringify(cart))}`;
+      });
+    }
+
+    /* =========================
        PLUS / MINUS BUTTONS
     ========================= */
     document.addEventListener("click", function (e) {
-      if (e.target.classList.contains("plus")) {
-        const id = e.target.dataset.id;
-        cart[id][0]++;
-      }
+      const plusBtn = e.target.closest(".plus");
+      const minusBtn = e.target.closest(".minus");
 
-      if (e.target.classList.contains("minus")) {
-        const id = e.target.dataset.id;
-        cart[id][0]--;
-
-        if (cart[id][0] <= 0) {
-          delete cart[id];
-
-          const div = document.getElementById("div" + id);
-          if (div) {
-            div.innerHTML = `
-              <button id="${id}" class="btn-cart-pill cart">
-                Add To Bag
-              </button>
-            `;
-          }
+      if (plusBtn) {
+        const id = plusBtn.dataset.id;
+        if (cart[id]) {
+          cart[id][0]++;
+          saveCart();
+          updatePopover();
         }
       }
 
-      saveCart();
-      updatePopover();
+      if (minusBtn) {
+        const id = minusBtn.dataset.id;
+        if (cart[id]) {
+          cart[id][0]--;
+          if (cart[id][0] <= 0) {
+            delete cart[id];
+            const div = document.getElementById("div" + id);
+            if (div) {
+              div.innerHTML = `
+                <button id="${id}" class="btn-cart-pill cart w-100">
+                  <i class="bi bi-bag-plus me-1"></i> Add To Bag
+                </button>
+              `;
+            }
+          }
+          saveCart();
+          updatePopover();
+        }
+      }
     });
 
     /* =========================
@@ -393,10 +556,10 @@ MH Club | {{ product.product_name }}
         if (!div) continue;
 
         div.innerHTML = `
-          <div class="d-flex align-items-center justify-content-between w-100" style="border: 1px solid #eee; border-radius: 50px; padding: 6px; background: #fff;">
-            <button class="btn btn-sm minus rounded-circle" style="width: 44px; height: 44px; background: #f5f5f5; color: #111; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" data-id="${item}">−</button>
-            <span class="fw-bold mx-2" style="font-size: 1rem; color: #111;">${cart[item][0]}</span>
-            <button class="btn btn-sm plus rounded-circle" style="width: 44px; height: 44px; background: #111; color: #fff; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" data-id="${item}">+</button>
+          <div class="d-flex align-items-center justify-content-between w-100" style="border: 1px solid #eee; border-radius: 50px; padding: 4px 8px; background: #fff;">
+            <button class="btn btn-sm minus rounded-circle" style="width: 40px; height: 40px; background: #f5f5f5; color: #111; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;" data-id="${item}">−</button>
+            <span class="fw-bold mx-2" style="font-size: 0.95rem; color: #111;">${cart[item][0]} in Bag</span>
+            <button class="btn btn-sm plus rounded-circle" style="width: 40px; height: 40px; background: #111; color: #fff; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;" data-id="${item}">+</button>
           </div>
         `;
         div.style.display = "flex";
@@ -420,8 +583,9 @@ MH Club | {{ product.product_name }}
       for (let item in cart) {
         if (cart[item][0] > 0) {
           hasItems = true;
+          const sizeText = cart[item][5] ? ` (${cart[item][5]})` : '';
           html += `<div style="font-size: 0.85rem; color: #767676; margin-bottom: 8px;">
-            <span class="fw-bold text-dark">${i}.</span> ${cart[item][1].slice(0, 20)} 
+            <span class="fw-bold text-dark">${i}.</span> ${cart[item][1].slice(0, 18)}${sizeText} 
             <span class="float-end fw-bold text-dark">x${cart[item][0]}</span>
           </div>`;
           i++;
@@ -466,8 +630,8 @@ MH Club | {{ product.product_name }}
       document.querySelectorAll(".divpr").forEach(div => {
         const id = div.id.replace("div", "");
         div.innerHTML = `
-          <button id="${id}" class="btn-cart-pill cart">
-            Add To Bag
+          <button id="${id}" class="btn-cart-pill cart w-100">
+            <i class="bi bi-bag-plus me-1"></i> Add To Bag
           </button>
         `;
       });

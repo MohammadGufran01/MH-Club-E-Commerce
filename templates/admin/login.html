@@ -1,44 +1,121 @@
 {% extends "admin/login.html" %}
 {% load static %}
 
-{% block extrahead %}
+{% block extrastyle %}
 {{ block.super }}
-
 <style>
+/* ==========================================================
+   FUTURISTIC GLASSMORPHIC ADMIN LOGIN PORTAL
+   ========================================================== */
+
+body {
+    background: radial-gradient(circle at 15% 20%, #1e1b4b 0%, #0f172a 50%, #020617 100%) !important;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow-x: hidden;
+    font-family: 'Outfit', -apple-system, sans-serif !important;
+}
+
+/* Ambient Floating Glowing Orbs */
+body::before {
+    content: '';
+    position: fixed;
+    top: 15%;
+    left: 20%;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatOrb 8s ease-in-out infinite alternate;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: 10%;
+    right: 20%;
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatOrb2 10s ease-in-out infinite alternate;
+}
+
+@keyframes floatOrb {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 40px) scale(1.1); }
+}
+
+@keyframes floatOrb2 {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-40px, -30px) scale(1.15); }
+}
+
+/* Login Container Box */
+div[class*="max-w-"] {
+    position: relative;
+    z-index: 10;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15) !important;
+    animation: loginEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes loginEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Inputs & Labels */
+input[type="text"], input[type="password"] {
+    border-radius: 12px !important;
+    transition: all 0.25s ease !important;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+}
+
 .login-loader {
-  display: none;
-  margin-left: 8px;
+    display: none;
+    margin-left: 8px;
 }
 
 .login-btn-loading {
-  pointer-events: none;
-  opacity: 0.8;
+    pointer-events: none;
+    opacity: 0.85;
 }
 </style>
+{% endblock %}
 
+{% block extrahead %}
+{{ block.super }}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    if (!form) return;
+    
+    const loginBtn = form.querySelector("button[type='submit']");
+    if (!loginBtn) return;
 
-  const form = document.querySelector("form");
-  const loginBtn = form.querySelector("button[type='submit']");
-
-  if (!loginBtn) return;
-
-  const spinner = document.createElement("span");
-  spinner.className = "login-loader spinner-border spinner-border-sm";
-  spinner.setAttribute("role", "status");
-  spinner.setAttribute("aria-hidden", "true");
-
-  loginBtn.appendChild(spinner);
-
-  form.addEventListener("submit", function () {
-    loginBtn.classList.add("login-btn-loading");
-    spinner.style.display = "inline-block";
-    loginBtn.innerHTML = "Logging in… ";
-    loginBtn.appendChild(spinner);
-  });
-
+    form.addEventListener("submit", function () {
+        loginBtn.classList.add("login-btn-loading");
+        loginBtn.innerHTML = 'Authenticating… <span class="spinner-border spinner-border-sm ml-2"></span>';
+    });
 });
 </script>
-
 {% endblock %}

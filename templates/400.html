@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>400 - Bad Request | MH Club</title>
+  <link rel="icon" href="{% static 'images/logo.png' %}">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #ffffff;
+      --bg-muted: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --radius-pill: 50px;
+      --radius-card: 24px;
+    }
+
+    body {
+      background-color: var(--bg-muted);
+      font-family: 'Outfit', 'Inter', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .error-card {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-card);
+      padding: 48px 36px;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      margin-bottom: 2rem;
+    }
+
+    .brand-logo img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .icon-badge {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: #fef3c7;
+      color: #d97706;
+      border: 2px solid #fde68a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem auto;
+      font-size: 2.2rem;
+    }
+
+    .error-code {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .error-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.75rem;
+      color: var(--text-main);
+    }
+
+    .error-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-action-dark {
+      background-color: #0f172a;
+      color: #ffffff;
+      border-radius: var(--radius-pill);
+      padding: 13px 28px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #0f172a;
+    }
+
+    .btn-action-dark:hover {
+      background-color: #334155;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .btn-action-outline {
+      background-color: transparent;
+      color: var(--text-main);
+      border-radius: var(--radius-pill);
+      padding: 13px 28px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-action-outline:hover {
+      background-color: var(--bg-muted);
+      border-color: #94a3b8;
+      transform: translateY(-2px);
+    }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="error-card">
+    <div class="brand-logo">
+      <img src="{% static 'images/logo.png' %}" alt="MH Club" onerror="this.style.display='none'">
+      MH CLUB
+    </div>
+
+    <div class="icon-badge">
+      <i class="bi bi-exclamation-triangle"></i>
+    </div>
+
+    <div class="error-code">400</div>
+    <div class="error-title">Bad Request</div>
+    <p class="error-desc">
+      The server could not understand the request due to invalid syntax or an expired session. Please refresh the page or return to the main store.
+    </p>
+
+    <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+      <a href="/" class="btn-action-dark">
+        <i class="bi bi-house me-2"></i> Return to Store
+      </a>
+      <a href="javascript:history.back()" class="btn-action-outline">
+        <i class="bi bi-arrow-left me-2"></i> Go Back
+      </a>
+    </div>
+
+    <div class="footer-note">
+      Need assistance? <a href="/contact/" class="text-dark fw-bold text-decoration-none">Contact Support</a>
+    </div>
+  </div>
+
+</body>
+</html>

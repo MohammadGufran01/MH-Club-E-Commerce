@@ -390,17 +390,12 @@
             </div>
 
             <!-- Buttons stick to bottom -->
-            <div class="mt-auto d-flex gap-2">
-              <div id="divpr{{i.id}}" class="divpr flex-grow-1">
-                <button id="pr{{i.id}}" class="btn-cart-pill cart">
+            <div class="mt-auto">
+              <div id="divpr{{i.id}}" class="divpr w-100">
+                <button id="pr{{i.id}}" class="btn-cart-pill cart w-100">
                   Add To Bag
                 </button>
               </div>
-
-              <button class="btn-icon-pill view-image" data-bs-toggle="modal" data-bs-target="#imageModal"
-                data-name="{{ i.product_name }}" data-image="{{ i.image.url }}">
-                <i class="bi bi-eye"></i>
-              </button>
             </div>
 
           </div>
@@ -413,22 +408,6 @@
     {% endfor %}
   </div>
 </section>
-
-<!-- Product Image Modal -->
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content" style="border-radius: 24px; border: none;">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-bold" style="font-size: 1.2rem; color: #111;" id="imageModalLabel">----</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body text-center p-4">
-        <img id="modalImage" src="" class="img-fluid"
-          style="max-height: 70vh; object-fit: contain; border-radius: 16px;" alt="Large Product Image">
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -603,21 +582,6 @@
         `;
       });
     };
-
-    /* =========================
-       MODAL IMAGE HANDLING
-    ========================= */
-    document.querySelectorAll(".view-image").forEach(button => {
-      button.addEventListener("click", function () {
-        const imageUrl = this.dataset.image;
-        const productName = this.dataset.name;
-        const modalImage = document.getElementById("modalImage");
-        const modalTitle = document.getElementById("imageModalLabel");
-
-        modalTitle.textContent = productName;
-        modalImage.src = imageUrl;
-      });
-    });
 
     /* =========================
        MULTI-IMAGE HOVER CYCLING

@@ -1,0 +1,584 @@
+{% extends 'admin/base.html' %}
+{% load i18n static unfold %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-container space-y-6 pb-12">
+
+    <!-- ==================== 1. HERO GREETING & COMMAND BAR (VIBRANT & VISIBLE) ==================== -->
+    <div class="dashboard-hero-banner">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="hero-live-badge">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-ping inline-block"></span>
+                        Live Store Active
+                    </span>
+                    <span id="dashboard-live-clock" class="hero-clock-badge">
+                        {{ current_time_display }}
+                    </span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                    MH Club Control Center <span class="text-indigo-300 text-lg sm:text-xl font-normal">| Overview</span>
+                </h1>
+                <p class="text-sm hero-subtitle max-w-2xl leading-relaxed">
+                    Real-time operational dashboard for orders, catalog inventory, payments, and delivery fleet logistics.
+                </p>
+            </div>
+
+            <!-- Quick Action Shortcuts with Explicit Visible Styling -->
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="{% url 'admin:buyzoneapp_product_add' %}" class="hero-btn-add">
+                    <span class="material-symbols-outlined text-lg">add_circle</span>
+                    <span>+ Add New Product</span>
+                </a>
+                <a href="{% url 'admin:buyzoneapp_orders_changelist' %}?paymentstatus__exact=Pending" class="hero-btn-dark">
+                    <span class="material-symbols-outlined text-base text-amber-400">pending_actions</span>
+                    <span>Pending Orders</span>
+                    {% if kpi_orders_pending > 0 %}
+                        <span style="background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); padding: 1px 7px; border-radius: 9999px; font-size: 11px;">{{ kpi_orders_pending }}</span>
+                    {% endif %}
+                </a>
+                <a href="{% url 'admin:buyzoneapp_cancelledpaidorder_changelist' %}" class="hero-btn-dark">
+                    <span class="material-symbols-outlined text-base text-purple-400">currency_exchange</span>
+                    <span>Refunds</span>
+                    {% if kpi_pending_refunds > 0 %}
+                        <span style="background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); padding: 1px 7px; border-radius: 9999px; font-size: 11px;">{{ kpi_pending_refunds }}</span>
+                    {% endif %}
+                </a>
+                <a href="/" target="_blank" class="hero-btn-store">
+                    <span class="material-symbols-outlined text-base">storefront</span>
+                    <span>Live Store</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 2. ANIMATED STATISTICAL KPI CARDS ==================== -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <!-- CARD 1: GROSS REVENUE -->
+        <div class="kpi-glass-card group">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Gross Revenue</span>
+                    <h3 class="text-2xl sm:text-3xl font-black mt-2 text-slate-900 dark:text-white tracking-tight">
+                        <span class="stat-counter" data-target="{{ kpi_total_revenue }}" data-prefix="₹" data-decimals="0">0</span>
+                    </h3>
+                </div>
+                <div class="kpi-icon-box kpi-icon-indigo group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl text-white">account_balance_wallet</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span>Today: <strong class="text-slate-800 dark:text-slate-200">₹{{ kpi_today_revenue|floatformat:0 }}</strong></span>
+                <span class="inline-flex items-center text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full">
+                    ↑ 18.2% vs last mo
+                </span>
+            </div>
+        </div>
+
+        <!-- CARD 2: TOTAL ORDERS -->
+        <div class="kpi-glass-card group">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Orders Flow</span>
+                    <h3 class="text-2xl sm:text-3xl font-black mt-2 text-slate-900 dark:text-white tracking-tight">
+                        <span class="stat-counter" data-target="{{ kpi_total_orders }}" data-decimals="0">0</span>
+                    </h3>
+                </div>
+                <div class="kpi-icon-box kpi-icon-emerald group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl text-white">shopping_cart_checkout</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span>Paid / Completed: <strong class="text-emerald-600 dark:text-emerald-400 font-semibold">{{ kpi_orders_paid }}</strong></span>
+                <span class="inline-flex items-center text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50 dark:bg-indigo-950/50 px-2 py-0.5 rounded-full">
+                    {{ kpi_fulfillment_rate }}% Success
+                </span>
+            </div>
+        </div>
+
+        <!-- CARD 3: CUSTOMER BASE & FLEET -->
+        <div class="kpi-glass-card group">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Customers & Fleet</span>
+                    <h3 class="text-2xl sm:text-3xl font-black mt-2 text-slate-900 dark:text-white tracking-tight">
+                        <span class="stat-counter" data-target="{{ kpi_total_customers }}" data-decimals="0">0</span>
+                    </h3>
+                </div>
+                <div class="kpi-icon-box kpi-icon-purple group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl text-white">groups</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span>Fleet: <strong class="text-slate-800 dark:text-slate-200">{{ kpi_total_delivery_boys }} Agents</strong></span>
+                <span class="inline-flex items-center text-purple-600 dark:text-purple-400 font-semibold bg-purple-50 dark:bg-purple-950/50 px-2 py-0.5 rounded-full">
+                    {{ kpi_verified_otps }} OTPs Done
+                </span>
+            </div>
+        </div>
+
+        <!-- CARD 4: CATALOG & INVENTORY HEALTH -->
+        <div class="kpi-glass-card group">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Catalog SKUs</span>
+                    <h3 class="text-2xl sm:text-3xl font-black mt-2 text-slate-900 dark:text-white tracking-tight">
+                        <span class="stat-counter" data-target="{{ kpi_total_products }}" data-decimals="0">0</span>
+                    </h3>
+                </div>
+                <div class="kpi-icon-box kpi-icon-amber group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl text-white">inventory_2</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span>Variants: <strong class="text-slate-800 dark:text-slate-200">{{ kpi_total_variants }}</strong></span>
+                {% if kpi_low_stock_count > 0 %}
+                    <span class="inline-flex items-center text-rose-600 dark:text-rose-400 font-semibold bg-rose-50 dark:bg-rose-950/50 px-2 py-0.5 rounded-full animate-pulse">
+                        ⚠️ {{ kpi_low_stock_count }} Low Stock
+                    </span>
+                {% else %}
+                    <span class="inline-flex items-center text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full">
+                        ✓ In Stock
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== 3. INTERACTIVE STATISTICAL CHARTS ==================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- MAIN AREA CHART: REVENUE & ORDERS GROWTH (2 COLS) -->
+        <div class="lg:col-span-2 chart-card">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-indigo-500">show_chart</span>
+                        Revenue & Order Growth Dynamics
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        Continuous timeline performance comparing gross revenue generated against order transaction volume.
+                    </p>
+                </div>
+                
+                <!-- Period Switcher Buttons -->
+                <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <button type="button" id="btn-chart-7d" class="chart-period-btn-active">
+                        7 Days
+                    </button>
+                    <button type="button" id="btn-chart-30d" class="chart-period-btn-inactive">
+                        30 Days
+                    </button>
+                </div>
+            </div>
+
+            <!-- APEXCHART CONTAINER -->
+            <div id="chart-revenue-growth" class="w-full h-80"></div>
+        </div>
+
+        <!-- DONUT CHART: ORDER FULFILLMENT STATUS (1 COL) -->
+        <div class="chart-card flex flex-col justify-between">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-purple-500">pie_chart</span>
+                    Order Status Breakdown
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    Distribution of all current orders in pipeline.
+                </p>
+
+                <!-- APEXCHART CONTAINER -->
+                <div id="chart-order-status" class="w-full h-64 mt-4"></div>
+            </div>
+
+            <!-- Quick Status Metrics Summary -->
+            <div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span class="text-slate-600 dark:text-slate-400">Paid: <strong>{{ kpi_orders_paid }}</strong></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                    <span class="text-slate-600 dark:text-slate-400">Pending: <strong>{{ kpi_orders_pending }}</strong></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                    <span class="text-slate-600 dark:text-slate-400">Cancelled: <strong>{{ kpi_orders_cancelled }}</strong></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                    <span class="text-slate-600 dark:text-slate-400">Returned: <strong>{{ kpi_orders_returned }}</strong></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== 4. STORE PRODUCTS CATALOG SHOWCASE (PROMINENT SECTION) ==================== -->
+    <div class="catalog-card space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            Store Products Catalog & Inventory
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300">
+                                {{ catalog_products|length }} Products
+                            </span>
+                        </h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            Live inventory catalog with pricing, auto discount, variant sizes, and 1-click controls.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons for Products -->
+            <div class="flex flex-wrap items-center gap-2.5">
+                <a href="{% url 'admin:buyzoneapp_product_add' %}" class="hero-btn-add">
+                    <span class="material-symbols-outlined text-base">add_circle</span>
+                    <span>+ Add New Product</span>
+                </a>
+                <a href="{% url 'admin:buyzoneapp_productvariant_changelist' %}" class="hero-btn-dark">
+                    <span class="material-symbols-outlined text-base text-purple-400">style</span>
+                    <span>Variants & Stock</span>
+                </a>
+                <a href="{% url 'admin:buyzoneapp_product_changelist' %}" class="hero-btn-dark">
+                    <span class="material-symbols-outlined text-base text-indigo-400">grid_view</span>
+                    <span>Full Grid →</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Products Catalog Grid / Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-xs uppercase font-bold text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800">
+                        <th class="py-3 px-3">Product</th>
+                        <th class="py-3 px-3">Category</th>
+                        <th class="py-3 px-3">Price / Discount</th>
+                        <th class="py-3 px-3">Variant Stocks (Sizes)</th>
+                        <th class="py-3 px-3">Total Stock</th>
+                        <th class="py-3 px-3">Rating</th>
+                        <th class="py-3 px-3 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs">
+                    {% for item in catalog_products %}
+                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                        <td class="py-3 px-3">
+                            <div class="flex items-center gap-3">
+                                {% if item.image_url %}
+                                    <img src="{{ item.image_url }}" alt="{{ item.product_name }}" class="w-12 h-12 rounded-xl object-cover shadow-xs border border-slate-200 dark:border-slate-700 flex-shrink-0">
+                                {% else %}
+                                    <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center flex-shrink-0">
+                                        <span class="material-symbols-outlined text-xl">image_not_supported</span>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <a href="{{ item.edit_url }}" class="font-bold text-slate-900 dark:text-white hover:text-indigo-600 transition-colors text-sm">
+                                        {{ item.product_name }}
+                                    </a>
+                                    <div class="text-[11px] text-slate-400 font-mono mt-0.5">SKU ID: #{{ item.id }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3 px-3">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+                                📂 {{ item.category }}
+                            </span>
+                            {% if item.subcategory %}
+                                <span class="block text-[11px] text-slate-400 mt-0.5">{{ item.subcategory }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-3">
+                            <div class="font-extrabold text-sm text-emerald-600 dark:text-emerald-400">
+                                ₹{{ item.price }}
+                            </div>
+                            {% if item.old_price > item.price %}
+                                <div class="text-[11px] text-slate-400">
+                                    <del>₹{{ item.old_price }}</del>
+                                    <span class="text-rose-500 font-bold ml-1">{{ item.discount }}% OFF</span>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-3">
+                            <div class="flex flex-wrap gap-1 max-w-xs">
+                                {% for v in item.variants %}
+                                    {% if v.is_out %}
+                                        <span class="variant-stock-chip variant-stock-out">
+                                            {{ v.size }}: 0 (Out)
+                                        </span>
+                                    {% elif v.is_low %}
+                                        <span class="variant-stock-chip variant-stock-low">
+                                            {{ v.size }}: {{ v.stock }} (Low)
+                                        </span>
+                                    {% else %}
+                                        <span class="variant-stock-chip">
+                                            {{ v.size }}: <strong>{{ v.stock }}</strong>
+                                        </span>
+                                    {% endif %}
+                                {% empty %}
+                                    <span class="text-slate-400 italic text-[11px]">No sizes</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="py-3 px-3">
+                            {% if item.total_stock > 10 %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-bold text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    {{ item.total_stock }} Units
+                                </span>
+                            {% elif item.total_stock > 0 %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-bold text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    {{ item.total_stock }} Units
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-bold text-xs bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                    Out of stock
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-3 text-slate-700 dark:text-slate-300">
+                            {{ item.rating_stars }}
+                        </td>
+                        <td class="py-3 px-3 text-right">
+                            <a href="{{ item.edit_url }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white font-semibold text-xs transition-all shadow-xs" title="Edit Product">
+                                <span class="material-symbols-outlined text-sm">edit</span>
+                                Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-10 text-slate-400">
+                            <div class="flex flex-col items-center gap-3">
+                                <span class="material-symbols-outlined text-4xl text-slate-300">inventory_2</span>
+                                <p>No products in store catalog yet.</p>
+                                <a href="{% url 'admin:buyzoneapp_product_add' %}" class="hero-btn-add">
+                                    + Add Your First Product
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== 5. SECONDARY STATISTICAL CHARTS ==================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- CATEGORY DISTRIBUTION BAR CHART -->
+        <div class="chart-card">
+            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-indigo-500">category</span>
+                Catalog Category Product Volume
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Active product distribution across top categories.
+            </p>
+            <div id="chart-category-bar" class="w-full h-64 mt-4"></div>
+        </div>
+
+        <!-- PAYMENT METHOD DONUT CHART -->
+        <div class="chart-card">
+            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-teal-500">credit_card</span>
+                Payment Channels Distribution
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Online gateway vs Cash on Delivery order share.
+            </p>
+            <div id="chart-payment-donut" class="w-full h-64 mt-4"></div>
+        </div>
+
+    </div>
+
+    <!-- ==================== 6. LIVE OPERATIONS & ACTIVITY STREAM ==================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- RECENT ORDERS STREAM TABLE (2 COLS) -->
+        <div class="lg:col-span-2 chart-card">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-emerald-500">local_shipping</span>
+                        Live Recent Orders Stream
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        Latest incoming orders with realtime status and fulfillment controls.
+                    </p>
+                </div>
+                <a href="{% url 'admin:buyzoneapp_orders_changelist' %}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 flex items-center gap-1">
+                    View All Orders →
+                </a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-xs uppercase font-bold text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800">
+                            <th class="py-3 px-3">Order ID</th>
+                            <th class="py-3 px-3">Customer</th>
+                            <th class="py-3 px-3">Amount</th>
+                            <th class="py-3 px-3">Status</th>
+                            <th class="py-3 px-3">Date</th>
+                            <th class="py-3 px-3 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs">
+                        {% for order in recent_orders %}
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3 px-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                                {{ order.oid }}
+                            </td>
+                            <td class="py-3 px-3">
+                                <div class="font-semibold text-slate-900 dark:text-white">{{ order.name }}</div>
+                                <div class="text-slate-400 text-[11px]">{{ order.email }}</div>
+                            </td>
+                            <td class="py-3 px-3 font-bold text-slate-900 dark:text-white">
+                                ₹{{ order.amount|floatformat:2 }}
+                            </td>
+                            <td class="py-3 px-3">
+                                {% if order.paymentstatus == "Paid" or order.paymentstatus == "Delivered" %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ order.paymentstatus }}
+                                    </span>
+                                {% elif order.paymentstatus == "Pending" or order.paymentstatus == "Placed" %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 animate-pulse">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        {{ order.paymentstatus }}
+                                    </span>
+                                {% elif order.paymentstatus == "Cancelled" %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                        {{ order.paymentstatus }}
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                                        {{ order.paymentstatus }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-3 text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                                {{ order.date }}
+                            </td>
+                            <td class="py-3 px-3 text-right">
+                                <a href="{{ order.view_url }}" class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white transition-all shadow-xs">
+                                    <span class="material-symbols-outlined text-sm">visibility</span>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-8 text-slate-400">No orders recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: LOW STOCK ALERTS & CUSTOMER FEED (1 COL) -->
+        <div class="space-y-6">
+            
+            <!-- INVENTORY STOCK ALERT BOX -->
+            <div class="chart-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-amber-500">warning</span>
+                        Inventory Alerts
+                    </h2>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                        {{ low_stock_variants|length }} Items
+                    </span>
+                </div>
+
+                <div class="space-y-3 max-h-72 overflow-y-auto pr-1">
+                    {% for item in low_stock_variants %}
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs">
+                        <div>
+                            <strong class="text-slate-800 dark:text-slate-200">{{ item.product_name }}</strong>
+                            <div class="text-slate-400 text-[11px]">Size: {{ item.size }} · Stock: <span class="font-bold text-rose-500">{{ item.stock }} left</span></div>
+                        </div>
+                        <a href="{{ item.edit_url }}" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-[11px] transition-all shadow-xs">
+                            Restock
+                        </a>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-6 text-emerald-500 text-xs flex flex-col items-center gap-2">
+                        <span class="material-symbols-outlined text-3xl">check_circle</span>
+                        All product variants have optimal inventory levels!
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- RECENT CONTACT MESSAGES -->
+            <div class="chart-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-indigo-500">chat</span>
+                        Customer Inquiries
+                    </h2>
+                    <a href="{% url 'admin:buyzoneapp_contact_changelist' %}" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">View All</a>
+                </div>
+
+                <div class="space-y-3">
+                    {% for contact in recent_contacts %}
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs">
+                        <div class="flex items-center justify-between">
+                            <strong class="text-slate-800 dark:text-slate-200">{{ contact.name }}</strong>
+                            <a href="mailto:{{ contact.email }}" class="text-indigo-600 dark:text-indigo-400 text-[11px] hover:underline">{{ contact.email }}</a>
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1 text-[11px] leading-relaxed">{{ contact.desc }}</p>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-4 text-slate-400 text-xs">No pending messages.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- DATA EMBED FOR APEXCHARTS JAVASCRIPT CONTROLLER -->
+<script id="dashboard-chart-data" type="application/json">
+{
+    "timeline7Labels": {{ chart_timeline_7_labels|safe }},
+    "timeline7Revenue": {{ chart_timeline_7_revenue|safe }},
+    "timeline7Orders": {{ chart_timeline_7_orders|safe }},
+    "timeline30Labels": {{ chart_timeline_30_labels|safe }},
+    "timeline30Revenue": {{ chart_timeline_30_revenue|safe }},
+    "timeline30Orders": {{ chart_timeline_30_orders|safe }},
+    "orderStatusLabels": {{ chart_order_status_labels|safe }},
+    "orderStatusSeries": {{ chart_order_status_series|safe }},
+    "categoriesLabels": {{ chart_categories_labels|safe }},
+    "categoriesSeries": {{ chart_categories_series|safe }},
+    "paymentLabels": {{ chart_payment_labels|safe }},
+    "paymentSeries": {{ chart_payment_series|safe }}
+}
+</script>
+{% endblock %}

@@ -4,90 +4,63 @@
 {% block extrahead %}
 {{ block.super }}
 
-<style>
-/* ===== Global Admin Loader ===== */
-#admin-loader {
-  position: fixed;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.75);
-  z-index: 99999;
-  display: none;
-}
+<!-- Google Fonts (Outfit & Inter) and Material Symbols -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
 
-#admin-loader .spinner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 18px;
-  font-weight: 600;
+<!-- ApexCharts Engine CDN -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<style>
+/* ===== Sleek Top Progress Bar Loader ===== */
+#admin-top-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #10b981);
+  z-index: 999999;
+  transition: width 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.7);
 }
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+  const progressBar = document.createElement("div");
+  progressBar.id = "admin-top-progress";
+  document.body.appendChild(progressBar);
 
-  /* Create loader */
-  const loader = document.createElement("div");
-  loader.id = "admin-loader";
-  loader.innerHTML = `
-    <div class="spinner">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden"></span>
-      </div>
-    </div>
-`;
-  document.body.appendChild(loader);
-
-  function showLoader() {
-    loader.style.display = "block";
+  function startProgress() {
+    progressBar.style.opacity = "1";
+    progressBar.style.width = "40%";
+    setTimeout(() => {
+      if (progressBar.style.opacity === "1") progressBar.style.width = "75%";
+    }, 200);
   }
 
-  function hideLoader() {
-    loader.style.display = "none";
+  function finishProgress() {
+    progressBar.style.width = "100%";
+    setTimeout(() => {
+      progressBar.style.opacity = "0";
+      setTimeout(() => { progressBar.style.width = "0%"; }, 300);
+    }, 150);
   }
 
-  /* ✅ Always hide loader when page finishes loading */
-  window.addEventListener("load", hideLoader);
-  window.addEventListener("pageshow", hideLoader); // back/forward fix
+  window.addEventListener("load", finishProgress);
+  window.addEventListener("pageshow", finishProgress);
 
-  /* ✅ Show loader on form submit (save, refund, assign) */
+  /* Trigger progress bar on form submits */
   document.querySelectorAll("form").forEach(form => {
     form.addEventListener("submit", () => {
-      showLoader();
+      startProgress();
     });
   });
-
-  /* ✅ Smart navigation handling */
-  document.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", function () {
-
-      const href = link.getAttribute("href");
-
-      /* ❌ Ignore JS / fake links */
-      /* ❌ Ignore invalid links */
-      if (!href || href === "#" || href.startsWith("javascript:")) return;
-
-      if (href.startsWith("#")) return;
-      
-      if (
-        link.closest("#user-tools") ||
-        link.closest(".usermenu") ||
-        link.closest(".dropdown-menu")
-      ) {
-        return;
-      }
-
-      /* ❌ Ignore new tab */
-      if (link.target === "_blank") {
-        return;
-      }
-
-      /* ✅ Real navigation */
-      showLoader();
-    });
-  });
-
 });
 </script>
 

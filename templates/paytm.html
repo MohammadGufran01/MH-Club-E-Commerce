@@ -7,49 +7,52 @@
     <title>Secure Payment | MH Club</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static '/images/logo.png' %}" rel="icon">
-    
+
     <!-- Fonts & Bootstrap Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
         :root {
             --bg-main: #ffffff;
-            --bg-muted: #f9f9f9;
-            --text-main: #111111;
-            --text-muted: #767676;
-            --border-color: #eeeeee;
-            --radius-lg: 24px;
+            --bg-muted: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-lg: 20px;
             --radius-pill: 50px;
+            --primary: #111827;
+            --emerald: #059669;
         }
 
         body {
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', 'Inter', sans-serif;
             background-color: var(--bg-muted);
             -webkit-font-smoothing: antialiased;
+            padding: 20px;
         }
 
         .payment-card {
             background: var(--bg-main);
-            width: 90%;
-            max-width: 440px;
-            padding: 40px 30px;
+            width: 100%;
+            max-width: 460px;
+            padding: 36px 28px;
             border-radius: var(--radius-lg);
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07);
             border: 1px solid var(--border-color);
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 0.4s ease-out;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: translateY(12px);
             }
             to {
                 opacity: 1;
@@ -57,27 +60,63 @@
             }
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.3rem;
+            font-weight: 800;
             color: var(--text-main);
             letter-spacing: -0.5px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .brand-badge img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
         }
 
         .subtitle {
             color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-pill {
+            background: var(--bg-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 0.9rem;
-            margin-bottom: 2rem;
+        }
+
+        .order-pill strong {
+            color: var(--text-main);
+        }
+
+        .order-amount {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--emerald);
+        }
+
+        .loader-box {
+            position: relative;
+            padding: 10px 0;
         }
 
         .loader {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border: 3px solid var(--border-color);
-            border-top: 3px solid var(--text-main);
+            border-top: 3px solid var(--primary);
             border-radius: 50%;
-            margin: 20px auto;
+            margin: 0 auto 15px auto;
             animation: spin 0.8s linear infinite;
         }
 
@@ -86,50 +125,75 @@
             100% { transform: rotate(360deg); }
         }
 
-        h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-main);
+        .btn-retry {
             margin-top: 1rem;
-            margin-bottom: 1.5rem;
+            padding: 13px;
+            width: 100%;
+            background: var(--primary);
+            color: #ffffff;
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-pill);
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .warning {
-            background: var(--bg-muted);
-            color: var(--text-muted);
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            margin-top: 1.5rem;
-            border: 1px solid var(--border-color);
-            line-height: 1.5;
+        .btn-retry:hover {
+            background: #27272a;
+            border-color: #27272a;
+            transform: translateY(-1px);
         }
 
         .cancel-button {
-            margin-top: 1.5rem;
-            padding: 12px;
+            margin-top: 0.75rem;
+            padding: 11px;
             width: 100%;
             background: transparent;
-            color: #d9534f;
-            border: 1px solid #d9534f;
+            color: #ef4444;
+            border: 1px solid #fca5a5;
             border-radius: var(--radius-pill);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
         }
 
         .cancel-button:hover {
-            background: #d9534f;
-            color: #fff;
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .test-guide {
+            margin-top: 1.5rem;
+            text-align: left;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 0.8rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .test-guide code {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
         }
 
         .secure-text {
-            margin-top: 1.5rem;
-            font-size: 0.8rem;
+            margin-top: 1.25rem;
+            font-size: 0.78rem;
             color: var(--text-muted);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
         }
     </style>
 </head>
@@ -137,24 +201,55 @@
 <body>
 
     <div class="payment-card">
-        <div class="logo">MH Club</div>
-        <div class="subtitle">Secure Razorpay Checkout</div>
+        
+        <div class="brand-badge">
+            <img src="{% static 'images/logo.png' %}" alt="MH Club" onerror="this.style.display='none'">
+            MH CLUB
+        </div>
+        <div class="subtitle">Secure Razorpay Payment Gateway</div>
 
-        <div class="loader"></div>
-
-        <h3>Redirecting you to payment gateway...</h3>
-
-        <div class="warning">
-            <i class="bi bi-exclamation-triangle me-1"></i> Please do not refresh or close this page while payment is processing.
+        <div class="order-pill">
+            <div class="text-start">
+                <span class="text-muted d-block" style="font-size: 0.75rem;">Order Reference</span>
+                <strong>#{{ order.oid|default:order_id }}</strong>
+            </div>
+            <div class="text-end">
+                <span class="text-muted d-block" style="font-size: 0.75rem;">Total Amount</span>
+                <span class="order-amount">₹{{ order.amount|default:amount }}</span>
+            </div>
         </div>
 
-        <button id="cancel-button" class="cancel-button">
-            Cancel Payment
+        <div class="loader-box">
+            <div class="loader"></div>
+            <div class="fw-semibold" style="color: var(--text-main); font-size: 0.95rem;">Opening Razorpay Payment Modal...</div>
+            <div class="text-muted small mt-1">Please complete your payment in the checkout window</div>
+        </div>
+
+        <!-- Action Controls -->
+        <button id="retry-button" class="btn-retry" type="button" onclick="openRazorpayModal()">
+            <i class="bi bi-shield-check"></i> Open Payment Window
         </button>
 
-        <div class="secure-text">
-            🔒 100% Secure Transaction via Razorpay
+        <button id="cancel-button" class="cancel-button" type="button">
+            Cancel & Return to Bag
+        </button>
+
+        <!-- Razorpay Test Mode Helper Guide -->
+        <div class="test-guide">
+            <div class="fw-bold text-dark mb-1">
+                <i class="bi bi-info-circle-fill text-primary me-1"></i> How to Test in Razorpay Test Mode:
+            </div>
+            <ul class="mb-0 ps-3 mt-1">
+                <li><strong>UPI:</strong> Select UPI &rarr; Enter VPA: <code>success@razorpay</code> or scan QR code.</li>
+                <li><strong>Cards:</strong> Use Test Card <code>4111 1111 1111 1111</code> (any future expiry & CVV).</li>
+                <li>In the simulation popup, click <strong>"Success"</strong> to finish.</li>
+            </ul>
         </div>
+
+        <div class="secure-text">
+            🔒 256-Bit SSL Encrypted & Verified by Razorpay
+        </div>
+
     </div>
 
     <!-- Razorpay Checkout Script -->
@@ -163,62 +258,122 @@
     <script>
         var options = {
             "key": "{{ key_id }}",
+            "amount": {{ amount|default:0 }},
             "currency": "INR",
             "name": "MH Club",
-            "logo": "http://127.0.0.1:8000/static/images/logo.png",
-            "description": "Order Payment",
+            "description": "Payment for Order #{{ order.oid|default:order_id }}",
+            "image": window.location.origin + "{% static 'images/logo.png' %}",
             "order_id": "{{ order_id }}",
+
+            // Explicitly enable and sequence UPI alongside Cards and Netbanking
             "method": {
-                upi: true,
-                card: true,
-                netbanking: true,
-                wallet: true
-            },
-            "handler": function (response) {
-                 fetch("/handlerequest/", {
-                     method: "POST",
-                     headers: {
-                         "Content-Type": "application/json",
-                     },
-                     body: JSON.stringify(response)
-                 }).then(res => res.json())
-                     .then(data => {
-                         if (data.status === "success") {
-                             window.location.href =
-                                 "/paymentstatus/?status=success&razorpay_order_id=" +
-                                 response.razorpay_order_id +
-                                 "&razorpay_payment_id=" +
-                                 response.razorpay_payment_id;
-                         } else {
-                             alert("Payment verification failed");
-                         }
-                     });
+                "upi": true,
+                "card": true,
+                "netbanking": true,
+                "wallet": true,
+                "paylater": false
             },
 
-            "modal": {
-                "ondismiss": function () {
-                    window.location.href =
-                        "/paymentstatus/?status=canceled&razorpay_order_id={{ order_id }}";
+            // Display configuration to force UPI blocks and QR options
+            "config": {
+                "display": {
+                    "blocks": {
+                        "upi_block": {
+                            "name": "Pay via UPI (GPay, PhonePe, Paytm, QR)",
+                            "instruments": [
+                                {
+                                    "method": "upi"
+                                }
+                            ]
+                        },
+                        "other_block": {
+                            "name": "Cards, Netbanking & Wallets",
+                            "instruments": [
+                                {
+                                    "method": "card"
+                                },
+                                {
+                                    "method": "netbanking"
+                                },
+                                {
+                                    "method": "wallet"
+                                }
+                            ]
+                        }
+                    },
+                    "sequence": ["block.upi_block", "block.other_block"],
+                    "preferences": {
+                        "show_default_blocks": true
+                    }
                 }
             },
 
             "prefill": {
+                "name": "{{ order.name|default:request.user.get_full_name|escapejs }}",
+                "email": "{{ order.email|default:request.user.email|escapejs }}",
+                "contact": "{% if order.phone %}{{ order.phone|escapejs }}{% else %}9876543210{% endif %}"
             },
 
             "theme": {
-                "color": "#111111"
+                "color": "#0f172a"
+            },
+
+            "handler": function (response) {
+                console.log("Razorpay payment authorized:", response);
+
+                fetch("/handlerequest/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify(response)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log("Backend verification status:", data);
+
+                    if (data.status === "success") {
+                        window.location.href =
+                            "/paymentstatus/?status=success" +
+                            "&razorpay_order_id=" + encodeURIComponent(response.razorpay_order_id) +
+                            "&razorpay_payment_id=" + encodeURIComponent(response.razorpay_payment_id);
+                    } else {
+                        alert("Payment verification failed: " + (data.message || "Unknown error"));
+                    }
+                })
+                .catch(error => {
+                    console.error("Verification error:", error);
+                    alert("Something went wrong while verifying payment.");
+                });
+            },
+
+            "modal": {
+                "ondismiss": function () {
+                    console.log("User closed payment modal");
+                }
             }
         };
-        
-        var rzp1 = new Razorpay(options);
 
-        function openRazorpay() {
-            rzp1.open();
+        var rzp = null;
+
+        function openRazorpayModal() {
+            try {
+                if (!rzp) {
+                    rzp = new Razorpay(options);
+                }
+                rzp.open();
+            } catch (err) {
+                console.error("Error launching Razorpay:", err);
+            }
         }
 
-        // Automatically trigger Razorpay modal on load
-        openRazorpay();
+        // Auto-launch on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            openRazorpayModal();
+        });
 
+        // Cancel button redirect
         document.getElementById("cancel-button").addEventListener("click", function () {
             window.location.href =
                 "/paymentstatus/?status=canceled&razorpay_order_id={{ order_id }}";

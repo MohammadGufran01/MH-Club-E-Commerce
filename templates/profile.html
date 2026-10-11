@@ -140,12 +140,22 @@
 </style>
 
 <div class="profile-hero" data-aos="fade-in">
-  <h1 class="profile-title">Hello, {{ user.first_name }} {{ user.last_name }}</h1>
-  <p class="text-muted mb-4">Track, manage, or return your orders easily.</p>
+  <h1 class="profile-title">Hello, {{ user.first_name|default:user.username }} {{ user.last_name }}</h1>
+  <p class="text-muted mb-3">Track, manage, or return your orders easily.</p>
   
-  <span class="badge-custom" style="background-color: var(--bg-muted); border: 1px solid var(--border-color); color: var(--text-main);">
-    Total Orders: {{ items|length }}
-  </span>
+  <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+    <span class="badge-custom" style="background-color: var(--bg-muted); border: 1px solid var(--border-color); color: var(--text-main);">
+      Total Orders: {{ items|length }}
+    </span>
+    {% if user.is_staff or user.is_superuser %}
+      <a href="/admin/" class="btn-action-pill text-decoration-none" style="background: #111; color: #fff;">
+        <i class="bi bi-speedometer2 me-1"></i> Admin Panel
+      </a>
+    {% endif %}
+    <a href="{% url 'auth:handlelogout' %}" class="btn-action-pill btn-action-danger text-decoration-none d-inline-flex align-items-center gap-1">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </a>
+  </div>
 </div>
 {% endblock %}
 

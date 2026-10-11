@@ -75,37 +75,35 @@
       <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.75rem; letter-spacing: 1px;">Products in this Order
       </h6>
 
-      {% for pid, value in items.items %}
+      {% for item in items_list %}
       <div class="product-card">
 
         <div class="product-img">
-          {% if images %}
-          {% for imgLink in images.values %}
-          <img src="{{ imgLink }}" alt="Product">
-          {% endfor %}
+          {% if item.image %}
+          <img src="{{ item.image }}" alt="{{ item.name }}">
           {% else %}
           <div class="no-img">No Image</div>
           {% endif %}
         </div>
 
         <div class="product-info">
-          <div class="fw-bold mb-1" style="color: #111; font-size: 0.95rem;">{{ value.1 }}</div>
+          <div class="fw-bold mb-1" style="color: #111; font-size: 0.95rem;">{{ item.name }}</div>
           <div class="small text-muted mb-1">
-            Qty: <span class="text-dark fw-semibold">{{ value.0 }}</span>
-            {% if value.5 %} | Size: <span class="text-dark fw-semibold">{{ value.5 }}</span>{% endif %}
+            Qty: <span class="text-dark fw-semibold">{{ item.qty }}</span>
+            {% if item.size %} | Size: <span class="text-dark fw-semibold">{{ item.size }}</span>{% endif %}
           </div>
 
           <div class="mt-2">
-            <span class="fw-bold" style="color: #111; font-size: 1rem;">₹{{ value.2 }}</span>
-            {% if value.3 %}
+            <span class="fw-bold" style="color: #111; font-size: 1rem;">₹{{ item.price }}</span>
+            {% if item.mrp %}
             <span class="text-muted text-decoration-line-through small ms-2">
-              ₹{{ value.3 }}
+              ₹{{ item.mrp }}
             </span>
             {% endif %}
           </div>
 
-          {% if value.4 %}
-          <div class="small mt-1" style="color: #111; font-weight: 500;">{{ value.4 }}</div>
+          {% if item.discount %}
+          <div class="small mt-1 text-success fw-semibold">{{ item.discount }}% Off</div>
           {% endif %}
         </div>
 

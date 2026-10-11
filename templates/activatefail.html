@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Activation Failed | MH Club
+{% endblock title %}
+
+{% block content %}
+<style>
+  :root {
+    --bg-main: #ffffff;
+    --bg-muted: #f9f9f9;
+    --text-main: #111111;
+    --text-muted: #767676;
+    --border-color: #eeeeee;
+    --radius-pill: 50px;
+    --radius-lg: 24px;
+  }
+
+  body {
+    background-color: var(--bg-muted);
+  }
+
+  .auth-wrapper {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .auth-card {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 3.5rem 2.5rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  }
+
+  .fail-icon-wrapper {
+    width: 72px;
+    height: 72px;
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+    color: #ef4444;
+  }
+
+  .auth-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+  }
+
+  .auth-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .btn-primary-pill {
+    background-color: var(--text-main);
+    color: var(--bg-main);
+    border-radius: var(--radius-pill);
+    padding: 0.85rem 1.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid var(--text-main);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    display: inline-block;
+  }
+
+  .btn-primary-pill:hover {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+  }
+
+  .btn-outline-pill {
+    background-color: transparent;
+    color: var(--text-main);
+    border-radius: var(--radius-pill);
+    padding: 0.85rem 1.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    display: inline-block;
+  }
+
+  .btn-outline-pill:hover {
+    border-color: var(--text-main);
+    background-color: var(--bg-muted);
+  }
+</style>
+
+<div class="auth-wrapper">
+  <div class="auth-card" data-aos="fade-up">
+    
+    <div class="fail-icon-wrapper">
+      <i class="bi bi-shield-x fs-2"></i>
+    </div>
+
+    <h2 class="auth-title">Activation Link Expired</h2>
+    <p class="auth-subtitle">
+      The account activation link is invalid, expired, or has already been used. If your account is already active, please proceed to login.
+    </p>
+
+    <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 mt-4">
+      <a href="/auth/login/" class="btn-primary-pill">
+        Log In
+      </a>
+      <a href="/auth/signup/" class="btn-outline-pill">
+        Sign Up Again
+      </a>
+    </div>
+
+    <div class="mt-4 pt-3 border-top text-muted small">
+      Need help? <a href="/contact/" class="text-dark fw-semibold text-decoration-none">Contact Support</a>
+    </div>
+
+  </div>
+</div>
+{% endblock content %}
