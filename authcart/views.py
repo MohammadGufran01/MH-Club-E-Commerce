@@ -1,5 +1,6 @@
 import os
 import threading
+import urllib.parse
 
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import User
@@ -392,7 +393,13 @@ class ActivateAccountView(View):
 
 def handlelogin(request):
 
+    next_url = request.POST.get('next') or request.GET.get('next') or ''
+    if next_url and not (next_url.startswith('/') and not next_url.startswith('//')):
+        next_url = ''
+
     if request.user.is_authenticated:
+        if next_url:
+            return redirect(next_url)
         if request.user.groups.filter(name="DeliveryBoy").exists():
             return redirect("delivery_dashboard")
         if request.user.is_staff or request.user.is_superuser:
@@ -417,7 +424,8 @@ def handlelogin(request):
                     request,
                     "Your account is inactive. Please activate your account via email or contact support."
                 )
-                return redirect('/auth/login/')
+                redirect_target = f"/auth/login/?next={urllib.parse.quote(next_url)}" if next_url else '/auth/login/'
+                return redirect(redirect_target)
 
             login(request, myuser)
 
@@ -425,6 +433,9 @@ def handlelogin(request):
                 request,
                 "Login Success!"
             )
+
+            if next_url:
+                return redirect(next_url)
 
             if myuser.groups.filter(name="DeliveryBoy").exists():
                 return redirect("delivery_dashboard")
@@ -444,7 +455,8 @@ def handlelogin(request):
                     request,
                     "Your account has not been activated yet. Please check your email for the activation link."
                 )
-                return redirect('/auth/login/')
+                redirect_target = f"/auth/login/?next={urllib.parse.quote(next_url)}" if next_url else '/auth/login/'
+                return redirect(redirect_target)
         except Exception:
             pass
 
@@ -453,9 +465,9 @@ def handlelogin(request):
             'Invalid Credentials'
         )
 
-        return redirect('/auth/login/')
+        return render(request, 'login.html', {'next': next_url})
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', {'next': next_url})
 
 
 # ============================================================

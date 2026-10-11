@@ -8,6 +8,8 @@ from datetime import timedelta
 import razorpay
 from razorpay.errors import SignatureVerificationError
 
+import urllib.parse
+
 from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.auth.decorators import login_required
@@ -81,8 +83,9 @@ def sign(request):
 
 def checkout(request):
     if not request.user.is_authenticated:
-        messages.warning(request, "Please login first")
-        return redirect('/auth/login/')
+        messages.warning(request, "Please login first to proceed with checkout.")
+        next_target = urllib.parse.quote(request.get_full_path())
+        return redirect(f"/auth/login/?next={next_target}")
 
     items_json = request.POST.get('itemsJson') or request.GET.get('itemsJson')
     items = json.loads(items_json) if items_json else {}
@@ -216,8 +219,9 @@ def checkout(request):
 
 def order_activity(request, order_id):
     if not request.user.is_authenticated:
-        messages.warning(request, "Please login first")
-        return redirect('/auth/login/')
+        messages.warning(request, "Please login first to view order details.")
+        next_target = urllib.parse.quote(request.get_full_path())
+        return redirect(f"/auth/login/?next={next_target}")
 
     order = get_object_or_404(Orders, oid=order_id, email=request.user.email)
     items = json.loads(order.items_json or "{}") if isinstance(order.items_json, str) else (order.items_json or {})
@@ -384,8 +388,9 @@ def handlerequest(request):
         }, status=500)
 def profile(request):
     if not request.user.is_authenticated:
-        messages.warning(request, "Please login first")
-        return redirect('/auth/login/')
+        messages.warning(request, "Please login first to view your profile and orders.")
+        next_target = urllib.parse.quote(request.get_full_path())
+        return redirect(f"/auth/login/?next={next_target}")
 
     items = Orders.objects.filter(email=request.user.email).select_related("assigned_to").prefetch_related("updates").order_by("-BookDate")
     for order in items:
@@ -491,6 +496,9 @@ def cancel_order(request, order_id):
 
 
 def return_order(request, order_id):
+    if not request.user.is_authenticated:
+        messages.warning(request, "Please login first")
+        return redirect('/auth/login/?next=/profile/')
     order = get_object_or_404(Orders, id=order_id, email=request.user.email)
     if not order.delivered_at:
         messages.error(request, "This order has not been delivered yet.")

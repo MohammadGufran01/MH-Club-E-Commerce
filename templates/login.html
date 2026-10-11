@@ -135,8 +135,9 @@
     <h3 class="auth-title" data-aos="fade-up">Welcome Back</h3>
     <p class="auth-subtitle" data-aos="fade-up" data-aos-delay="50">Log in to your MH Club account.</p>
 
-    <form action="/auth/login/" method="post" id="login-form" data-aos="fade-up" data-aos-delay="100">
+    <form action="/auth/login/{% if next %}?next={{ next|urlencode }}{% elif request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" method="post" id="login-form" data-aos="fade-up" data-aos-delay="100">
       {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next|default:request.GET.next|default:'' }}">
       
       <label for="email" class="form-label">Email Address or Username</label>
       <input type="text" class="form-control" id="email" name="email" required autocomplete="username" placeholder="name@example.com or admin">
@@ -152,7 +153,7 @@
 
       <div class="auth-footer">
         <a href="/auth/request-reset-email/" style="font-weight: 500; color: var(--text-muted);">Forgot your password?</a>
-        <span>Don't have an account? <a href="/auth/signup/">Sign up here</a></span>
+        <span>Don't have an account? <a href="/auth/signup/{% if next %}?next={{ next|urlencode }}{% elif request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}">Sign up here</a></span>
       </div>
     </form>
 

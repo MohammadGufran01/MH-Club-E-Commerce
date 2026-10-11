@@ -27,6 +27,9 @@ class AuthUserRedirectMiddleware:
         # Prevent duplicate auth form access if user is already logged in
         duplicate_auth_paths = ("/auth/login/", "/auth/signup/", "/admin/login/")
         if user.is_authenticated and any(path.startswith(p) for p in duplicate_auth_paths):
+            next_url = request.GET.get('next') or request.POST.get('next') or ''
+            if next_url and next_url.startswith('/') and not next_url.startswith('//'):
+                return redirect(next_url)
             if user.groups.filter(name="DeliveryBoy").exists():
                 return redirect("delivery_dashboard")
             if user.is_staff or user.is_superuser:

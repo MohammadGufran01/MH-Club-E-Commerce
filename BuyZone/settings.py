@@ -20,7 +20,7 @@ print("----------------------")
 # BASIC SETTINGS
 # ======================
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-key")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "xru3oGCskx2iqZE7Zgo6YA0BY_ZvKMoBkSLS6-8W5jzMLGSKa1mVANk6UOjSZbJ416k")
 DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
@@ -127,11 +127,14 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 USE_X_FORWARDED_PORT = True
 
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/'
+
 if IS_VERCEL:
     SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SESSION_SAVE_EVERY_REQUEST = True
+    SESSION_SAVE_EVERY_REQUEST = False
     SESSION_COOKIE_SAMESITE = "Lax"
     CSRF_COOKIE_SAMESITE = "Lax"
     SESSION_COOKIE_HTTPONLY = True
