@@ -428,8 +428,24 @@ def productDetails(request, product_id):
 
 
 def category_products(request, category):
-    products = Product.objects.filter(category__name__iexact=category).prefetch_related('additional_images')
-    return render(request, 'category_products.html', {'category': category, 'products': products})
+    import urllib.parse
+    cleaned_category = urllib.parse.unquote_plus(category).strip()
+
+    cat_obj = Category.objects.filter(name__iexact=cleaned_category).first()
+    if not cat_obj and cleaned_category.isdigit():
+        cat_obj = Category.objects.filter(id=int(cleaned_category)).first()
+
+    if cat_obj:
+        products = Product.objects.filter(category=cat_obj).prefetch_related('additional_images')
+        display_name = cat_obj.name
+    else:
+        products = Product.objects.filter(
+            Q(category__name__iexact=cleaned_category) |
+            Q(subcategory__iexact=cleaned_category)
+        ).prefetch_related('additional_images')
+        display_name = cleaned_category
+
+    return render(request, 'category_products.html', {'category': display_name, 'products': products})
 
 
 def cancel_order(request, order_id):

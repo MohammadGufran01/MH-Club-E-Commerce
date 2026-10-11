@@ -123,10 +123,20 @@ DATABASES = {
 # ======================
 # SESSIONS & SECURITY
 # ======================
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
 if IS_VERCEL:
     SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SESSION_SAVE_EVERY_REQUEST = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    CSRF_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_AGE = 1209600
+
 
 
 # ======================
@@ -193,7 +203,7 @@ RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_RxQBw94fljOG8Y")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "qL14RIxEXO5zC7yAtWo5hqXI")
 
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/admin/'
 LOGOUT_REDIRECT_URL = '/'
 
 # ======================
