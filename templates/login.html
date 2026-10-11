@@ -77,22 +77,26 @@
   }
 
   .btn-submit-pill {
-    background-color: var(--text-main);
-    color: var(--bg-main);
+    background-color: #ffffff;
+    color: #111111;
     border-radius: var(--radius-pill);
-    padding: 1rem 2rem;
+    padding: 0.95rem 2rem;
     font-size: 1rem;
-    font-weight: 600;
-    border: 1px solid var(--text-main);
+    font-weight: 700;
+    border: 1.5px solid #111111;
     width: 100%;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     letter-spacing: 0.5px;
     margin-top: 1rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
   }
 
   .btn-submit-pill:hover:not(:disabled) {
-    background-color: var(--bg-main);
-    color: var(--text-main);
+    background-color: #111111;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   }
 
   .auth-footer {

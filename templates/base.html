@@ -269,19 +269,172 @@
       color: var(--text-muted);
     }
 
-    /* --- RESPONSIVE FIX: Hide sub-nav on mobile/tablet --- */
+    /* --- RESPONSIVE SYSTEM & HIGH-END MOBILE DRAWER --- */
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
+    /* White Login Buttons */
+    .btn-login-white {
+      background-color: #ffffff !important;
+      color: #111111 !important;
+      border: 1.5px solid #111111 !important;
+      font-size: 0.82rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      text-decoration: none;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-login-white:hover {
+      background-color: #111111 !important;
+      color: #ffffff !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    }
+
+    .btn-login-white-drawer {
+      background-color: #ffffff !important;
+      color: #111111 !important;
+      border: 1.5px solid #111111 !important;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+    }
+
+    .btn-login-white-drawer:hover {
+      background-color: #111111 !important;
+      color: #ffffff !important;
+      transform: translateY(-1px);
+    }
+
+    /* Hamburger Button */
+    .btn-hamburger {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--pill-border);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-hamburger:hover, .btn-hamburger:focus {
+      background-color: var(--pill-bg);
+      color: #000;
+      border-color: #dcdcdc;
+    }
+
+    /* Offcanvas Sidebar Drawer */
+    .offcanvas-start {
+      width: min(340px, 86vw) !important;
+      border-top-right-radius: 24px !important;
+      border-bottom-right-radius: 24px !important;
+      border: none !important;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18) !important;
+      z-index: 1095 !important;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .offcanvas-backdrop {
+      z-index: 1090 !important;
+      background-color: rgba(17, 17, 17, 0.45) !important;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .offcanvas-header .btn-close {
+      transition: transform 0.25s ease;
+      opacity: 0.7;
+    }
+
+    .offcanvas-header .btn-close:hover {
+      transform: rotate(90deg);
+      opacity: 1;
+    }
+
+    .drawer-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .drawer-link:hover, .drawer-link.active {
+      background-color: var(--pill-bg);
+      color: #000;
+      transform: translateX(4px);
+    }
+
+    .drawer-category-pill {
+      display: inline-block;
+      padding: 7px 16px;
+      border-radius: 50px;
+      background-color: #f5f5f5;
+      color: #111;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: 1px solid #ebebeb;
+    }
+
+    .drawer-category-pill:hover {
+      background-color: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
     @media (max-width: 991px) {
       .sub-nav {
         display: none !important;
       }
       .top-nav {
-        padding: 1rem;
+        padding: 1rem 1.25rem;
       }
       .brand-logo {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
       }
       .nav-actions {
         gap: 0.75rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .top-nav {
+        padding: 0.75rem 1rem;
+      }
+      .brand-logo {
+        font-size: 1.25rem;
+      }
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+      }
+      .btn-hamburger {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+      }
+      .site-footer {
+        padding: 2.5rem 1.25rem 1.5rem 1.25rem;
       }
     }
   </style>
@@ -293,19 +446,21 @@
   <!-- Main Header -->
   <header>
     <div class="top-nav">
-      <div class="d-flex align-items-center gap-3">
-        <!-- Hamburger Bar Icon: Visible on mobile and tablet -->
-        <i class="bi bi-list fs-3 d-lg-none" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu"></i>
+      <div class="d-flex align-items-center gap-2 gap-sm-3">
+        <!-- Hamburger Bar Button: Visible on mobile and tablet -->
+        <button class="btn btn-hamburger d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Toggle navigation">
+          <i class="bi bi-list"></i>
+        </button>
         <a href="/" class="brand-logo">MH CLUB.</a>
       </div>
 
       <div class="nav-actions">
         <a href="#" class="nav-links-desktop d-none d-lg-inline">Blogs</a>
         <a href="#" class="nav-links-desktop d-none d-lg-inline">FAQs</a>
-        <a href="#" class="icon-btn"><i class="bi bi-bell"></i></a>
+        <a href="#" class="icon-btn" title="Notifications"><i class="bi bi-bell"></i></a>
         
         <!-- Cart Icon with Popover Trigger -->
-        <a href="#" class="icon-btn position-relative" id="popcart" data-bs-toggle="popover">
+        <a href="#" class="icon-btn position-relative" id="popcart" data-bs-toggle="popover" title="Shopping Bag">
           <i class="bi bi-cart2"></i>
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark" id="cart"
             style="font-size: 0.6rem;">0</span>
@@ -346,7 +501,8 @@
           </a>
         {% else %}
           <a href="/auth/login/" class="icon-btn" title="Sign In"><i class="bi bi-person"></i></a>
-          <a href="/auth/login/" class="btn btn-dark btn-sm rounded-pill px-3 d-none d-lg-inline-flex align-items-center" style="font-size: 0.8rem; font-weight: 600;">
+          <!-- White Login Button -->
+          <a href="/auth/login/" class="btn btn-login-white btn-sm rounded-pill px-3 d-none d-lg-inline-flex align-items-center">
             Log In
           </a>
         {% endif %}
@@ -375,7 +531,7 @@
       <!-- Search Form with Live Results -->
       <form class="nav-pill search-pill d-flex align-items-center position-relative" method="GET" action="/search/" id="searchForm">
         <input type="text" placeholder="Search..." name="q" id="searchInput" autocomplete="off">
-        <button type="submit" class="btn p-0 border-0"><i class="bi bi-search"></i></button>
+        <button type="submit" class="btn p-0 border-0" aria-label="Search"><i class="bi bi-search"></i></button>
         
         <!-- Live Search Dropdown Box -->
         <div id="liveSearchResults" class="dropdown-menu shadow-sm border-0 p-2" style="display: none; position: absolute; top: 110%; left: 0; width: 280px; border-radius: 16px; background: #fff; z-index: 9999;">
@@ -391,68 +547,92 @@
     </div>
   </header>
 
-  <!-- Mobile & Tablet Offcanvas Sidebar Menu (Hamburger Drawer) -->
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel" style="border-radius: 0 24px 24px 0; border: none; width: 300px;">
+  <!-- Mobile & Tablet Offcanvas Sidebar Menu (Hamburger Drawer with Smooth Slide) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
     <div class="offcanvas-header border-bottom px-4 py-3">
-      <h5 class="offcanvas-title fw-bold" id="mobileMenuLabel" style="letter-spacing: -1px;">MH CLUB.</h5>
+      <div class="d-flex align-items-center gap-2">
+        <h5 class="offcanvas-title fw-bold mb-0" id="mobileMenuLabel" style="letter-spacing: -1px; font-size: 1.35rem;">MH CLUB.</h5>
+      </div>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body px-4 py-4">
+    <div class="offcanvas-body px-4 py-3 d-flex flex-column justify-content-between">
       
-      <!-- Mobile Search Input -->
-      <form class="input-group mb-4" method="GET" action="/search/">
-        <input type="text" class="form-control bg-light border-0 py-2" placeholder="Search products..." name="q" style="border-radius: 50px 0 0 50px; font-size: 0.9rem;">
-        <button class="btn btn-dark px-3" type="submit" style="border-radius: 0 50px 50px 0;"><i class="bi bi-search"></i></button>
-      </form>
+      <div>
+        <!-- Mobile Search Input -->
+        <form class="input-group mb-4" method="GET" action="/search/">
+          <input type="text" class="form-control bg-light border-0 py-2 ps-3" placeholder="Search products..." name="q" style="border-radius: 50px 0 0 50px; font-size: 0.9rem;" autocomplete="off">
+          <button class="btn btn-dark px-3" type="submit" style="border-radius: 0 50px 50px 0;" aria-label="Search"><i class="bi bi-search"></i></button>
+        </form>
 
-      <div class="d-flex flex-column gap-3">
-        {% if user.is_authenticated %}
-          <div class="p-3 bg-light rounded-3 mb-1">
-            <div class="fw-bold text-dark text-truncate" style="font-size: 0.9rem;">{{ user.first_name|default:user.username }}</div>
-            <div class="text-muted text-truncate" style="font-size: 0.8rem;">{{ user.email }}</div>
+        <!-- Auth Status Box -->
+        <div class="mb-3">
+          {% if user.is_authenticated %}
+            <div class="p-3 bg-light rounded-4 mb-2">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <div class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.8rem; font-weight: 700;">
+                  {{ user.username|slice:":1"|upper }}
+                </div>
+                <div class="overflow-hidden">
+                  <div class="fw-bold text-dark text-truncate" style="font-size: 0.88rem;">{{ user.first_name|default:user.username }}</div>
+                  <div class="text-muted text-truncate" style="font-size: 0.75rem;">{{ user.email }}</div>
+                </div>
+              </div>
+              {% if user.is_staff or user.is_superuser %}
+                <span class="badge bg-dark text-white rounded-pill" style="font-size: 0.65rem;">Administrator</span>
+              {% endif %}
+            </div>
             {% if user.is_staff or user.is_superuser %}
-              <span class="badge bg-dark mt-1" style="font-size: 0.7rem;">Administrator</span>
+              <a href="/admin/" class="drawer-link"><i class="bi bi-shield-lock-fill text-dark"></i>Admin Dashboard</a>
             {% endif %}
-          </div>
-          {% if user.is_staff or user.is_superuser %}
-            <a href="/admin/" class="text-decoration-none text-dark fw-bold fs-6"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</a>
+            <a href="/profile/" class="drawer-link"><i class="bi bi-box-seam text-dark"></i>My Orders & Profile</a>
+            <a href="{% url 'auth:handlelogout' %}" class="drawer-link text-danger"><i class="bi bi-box-arrow-right text-danger"></i>Logout</a>
+            <hr class="text-muted my-2">
+          {% else %}
+            <!-- Login & Signup Buttons in Mobile Drawer (Login button is White) -->
+            <div class="d-flex gap-2 mb-3">
+              <a href="/auth/login/" class="btn btn-login-white-drawer w-50 rounded-pill py-2 text-center">Log In</a>
+              <a href="/auth/signup/" class="btn btn-dark w-50 rounded-pill py-2 fw-semibold text-center" style="font-size: 0.88rem;">Sign Up</a>
+            </div>
+            <hr class="text-muted my-2">
           {% endif %}
-          <a href="/profile/" class="text-decoration-none text-dark fw-bold fs-6"><i class="bi bi-box-seam me-2"></i>Track Order & Profile</a>
-          <a href="{% url 'auth:handlelogout' %}" class="text-decoration-none text-danger fw-bold fs-6"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
-          <hr class="text-muted my-1">
-        {% else %}
-          <div class="d-flex gap-2 mb-1">
-            <a href="/auth/login/" class="btn btn-dark btn-sm w-50 rounded-pill py-2 fw-semibold">Log In</a>
-            <a href="/auth/signup/" class="btn btn-outline-dark btn-sm w-50 rounded-pill py-2 fw-semibold">Sign Up</a>
-          </div>
-          <hr class="text-muted my-1">
-        {% endif %}
-
-        <a href="/" class="text-decoration-none text-dark fw-bold fs-6">Home</a>
-        
-        <!-- Mobile Categories Accordion or List -->
-        <div class="py-1">
-          <span class="text-uppercase text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">Categories</span>
-          <div class="d-flex flex-column gap-2 mt-2 ps-2">
-            {% for cat in categories %}
-            <a href="{% url 'category_products' cat.name %}" class="text-decoration-none text-dark fw-medium" style="font-size: 0.95rem;">{{ cat.name }}</a>
-            {% empty %}
-            <span class="text-muted" style="font-size: 0.85rem;">No categories available</span>
-            {% endfor %}
-          </div>
         </div>
 
-        <a href="#" class="text-decoration-none text-dark fw-bold fs-6">New Arrivals</a>
-        <a href="#" class="text-decoration-none text-dark fw-bold fs-6">Sale</a>
-        
-        <hr class="text-muted my-2">
-        
-        <a href="/profile/" class="text-decoration-none text-muted fw-medium">Track Order & Profile</a>
-        <a href="#" class="text-decoration-none text-muted fw-medium">Blogs</a>
-        <a href="#" class="text-decoration-none text-muted fw-medium">FAQs & Support</a>
-        <a href="/contact/" class="text-decoration-none text-muted fw-medium">Contact Us</a>
-        <a href="/about/" class="text-decoration-none text-muted fw-medium">About Us</a>
+        <!-- Primary Navigation Links -->
+        <div class="d-flex flex-column gap-1">
+          <a href="/" class="drawer-link active"><i class="bi bi-house-door"></i>Home</a>
+          
+          <!-- Categories Collapsible Section -->
+          <div class="py-1">
+            <a class="drawer-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#drawerCategories" role="button" aria-expanded="false" aria-controls="drawerCategories">
+              <span><i class="bi bi-grid me-2"></i>Categories</span>
+              <i class="bi bi-chevron-down" style="font-size: 0.75rem;"></i>
+            </a>
+            <div class="collapse show mt-2 ps-2" id="drawerCategories">
+              <div class="d-flex flex-wrap gap-2 pt-1 pb-2">
+                {% for cat in categories %}
+                <a href="{% url 'category_products' cat.name %}" class="drawer-category-pill">{{ cat.name }}</a>
+                {% empty %}
+                <span class="text-muted small ps-2">No categories available</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <a href="#" class="drawer-link"><i class="bi bi-stars"></i>New Arrivals</a>
+          <a href="#" class="drawer-link"><i class="bi bi-tag"></i>Sale & Offers</a>
+          <a href="/about/" class="drawer-link"><i class="bi bi-info-circle"></i>About Us</a>
+          <a href="/contact/" class="drawer-link"><i class="bi bi-envelope"></i>Contact Support</a>
+        </div>
       </div>
+
+      <!-- Drawer Footer -->
+      <div class="pt-3 border-top mt-4">
+        <div class="text-muted small">
+          <strong>Store Contact:</strong><br>
+          Ahsan Ahmad: <a href="tel:7977211641" class="text-muted text-decoration-none">7977211641</a>
+        </div>
+      </div>
+
     </div>
   </div>
 

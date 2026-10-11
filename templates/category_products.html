@@ -101,8 +101,24 @@
   }
 
   @media (max-width: 768px) {
+    .category-hero {
+      padding: 2.5rem 1rem 1.5rem 1rem;
+    }
+
     .category-title {
-      font-size: 2.5rem;
+      font-size: clamp(1.8rem, 6vw, 2.5rem);
+    }
+
+    .btn-cart-pill {
+      padding: 8px 10px;
+      font-size: 0.78rem;
+    }
+
+    .sale-badge {
+      top: 10px;
+      left: 10px;
+      font-size: 0.68rem;
+      padding: 4px 9px;
     }
   }
 </style>
@@ -115,7 +131,7 @@
     {{ category|title }} Collection
     {% endif %}
   </h1>
-  <p class="text-muted" style="font-size: 1.1rem;">
+  <p class="text-muted" style="font-size: 1rem;">
     {% if is_search %}
     Showing matching products based on your search.
     {% else %}
@@ -127,10 +143,10 @@
 
 {% block body %}
 <div class="container mb-5">
-  <div class="row g-4 mb-5" data-aos="fade-up">
+  <div class="row g-3 g-md-4 mb-5" data-aos="fade-up">
 
     {% for i in products %}
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+    <div class="col-6 col-md-4 col-lg-3 d-flex">
       <div class="card product-card w-100 position-relative">
 
         <!-- Discount Badge overlay -->

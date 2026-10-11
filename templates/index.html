@@ -248,24 +248,84 @@
 
   @media (max-width: 768px) {
     .hero-container {
-      padding: 0 1rem;
+      padding: 0 0.75rem;
+      margin-bottom: 2.5rem;
     }
 
     .hero-card {
-      height: 60vh;
-      min-height: 400px;
+      height: 52vh;
+      min-height: 360px;
+      border-radius: 18px;
     }
 
     .hero-overlay {
-      padding: 2rem;
+      padding: 1.75rem;
     }
 
     .hero-title {
-      font-size: 3rem;
+      font-size: clamp(2rem, 7vw, 3rem);
+      letter-spacing: -1px;
+    }
+
+    .hero-subtitle {
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
     }
 
     .section-title {
-      font-size: 2rem;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+    }
+
+    .section-subtitle {
+      font-size: 0.92rem;
+      margin-bottom: 2rem;
+    }
+
+    .category-header {
+      font-size: 1.35rem;
+    }
+
+    .category-view-all {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .hero-card {
+      height: 48vh;
+      min-height: 320px;
+    }
+
+    .hero-overlay {
+      padding: 1.25rem;
+    }
+
+    .hero-title {
+      font-size: 1.85rem;
+    }
+
+    .btn-shopping {
+      padding: 0.75rem 1.35rem;
+      font-size: 0.88rem;
+    }
+
+    .btn-arrow {
+      width: 42px;
+      height: 42px;
+      font-size: 1rem;
+    }
+
+    .btn-cart-pill {
+      padding: 8px 10px;
+      font-size: 0.78rem;
+    }
+
+    .sale-badge {
+      top: 10px;
+      left: 10px;
+      font-size: 0.68rem;
+      padding: 4px 9px;
     }
   }
 </style>
@@ -320,16 +380,6 @@
   <div class="container" data-aos="fade-up">
     {% for product, range, nSlides in allProds %}
 
-    <!-- <div class="row mb-4 mt-5">
-      <div class="col-12">
-        <h3 class="category-header">
-           <a href="{% url 'category_products' product.0.category %}">
-             {{ product.0.category|title }} <span style="color: #767676; font-weight: 400;">Collection</span>
-           </a>
-        </h3>
-      </div>
-    </div> -->
-
     <!-- Category Header with View All Arrow -->
     <div class="row mb-4 mt-5">
       <div class="col-12">
@@ -346,9 +396,9 @@
       </div>
     </div>
 
-    <div class="row g-4 mb-5">
+    <div class="row g-3 g-md-4 mb-5">
       {% for i in product %}
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+      <div class="col-6 col-md-4 col-lg-3 d-flex">
 
         <div class="card product-card w-100 position-relative">
 

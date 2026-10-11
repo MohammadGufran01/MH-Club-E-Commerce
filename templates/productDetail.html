@@ -208,12 +208,35 @@ MH Club | {{ product.product_name }}
 
   @media (max-width: 768px) {
     .product-title {
-      font-size: 2rem;
+      font-size: 1.85rem;
     }
 
     .product-image-container {
       padding: 1rem;
       border-radius: 16px;
+      max-height: 420px;
+    }
+
+    .product-image-main {
+      max-height: 380px;
+    }
+
+    .product-gallery-flex {
+      flex-direction: column-reverse !important;
+    }
+
+    .product-thumbnails-sidebar {
+      flex-direction: row !important;
+      overflow-x: auto !important;
+      max-height: none !important;
+      width: 100% !important;
+      padding-bottom: 6px;
+    }
+
+    .thumbnail-item {
+      width: 60px;
+      height: 75px;
+      flex-shrink: 0;
     }
   }
 
@@ -246,10 +269,10 @@ MH Club | {{ product.product_name }}
 
     <!-- LEFT : Vertical Thumbnails Sidebar & Main Image Preview -->
     <div class="col-12 col-lg-7" data-aos="fade-right">
-      <div class="d-flex gap-3 align-items-start">
+      <div class="product-gallery-flex d-flex gap-3 align-items-start">
 
         <!-- Vertical Thumbnails Sidebar -->
-        <div class="d-flex flex-column gap-2" style="max-height: 550px; overflow-y: auto; scrollbar-width: none;">
+        <div class="product-thumbnails-sidebar d-flex flex-column gap-2" style="max-height: 550px; overflow-y: auto; scrollbar-width: none;">
           {% for img in product.additional_images.all %}
           <div class="thumbnail-item {% if forloop.first %}active-thumb{% endif %}"
             onclick="changeMainImage('{{ img.image.url }}', this)">
