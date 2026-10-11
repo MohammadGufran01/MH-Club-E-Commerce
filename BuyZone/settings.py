@@ -21,8 +21,14 @@ print("----------------------")
 # ======================
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-key")
-DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.vercel.app",
+    "https://*.now.sh",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]
 
 
 # ======================
@@ -318,6 +324,7 @@ UNFOLD = {
         lambda request: static("assets/css/admin_custom.css"),
     ],
     "SCRIPTS": [
+        lambda request: "https://cdn.jsdelivr.net/npm/apexcharts",
         lambda request: static("assets/js/admin_dashboard.js"),
     ],
     "COLORS": {

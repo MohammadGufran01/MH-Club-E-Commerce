@@ -14,11 +14,14 @@ urlpatterns = [
     path("delivery/", include("delivery.urls")),
 ]
 
-# ✅ MEDIA FILES (ONLY ONCE)
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+from django.views.static import serve
 
-# Catch-all route for any unmatched URLs to always render the luxury 404 page even in DEBUG mode
+# ✅ MEDIA FILES (ALWAYS SERVED BEFORE CATCH-ALL)
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
+
+# Catch-all route for any unmatched URLs to always render the luxury 404 page
 urlpatterns += [
     re_path(r'^.*$', custom_404_view, name='catch_all_404'),
 ]
