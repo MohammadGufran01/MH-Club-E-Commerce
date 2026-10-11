@@ -4,11 +4,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from buyzoneapp.views import custom_404_view
 
+from django.shortcuts import redirect
 from authcart import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('logout/', auth_views.handlelogout, name='direct_logout'),
+    path('accounts/profile/', lambda request: redirect('/profile/')),
     path('', include('buyzoneapp.urls')),
     path('auth/', include('authcart.urls')),
     path("delivery/", include("delivery.urls")),
